@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY rfc2119 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY rfc3550 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3550.xml">
+<!ENTITY rfc3551 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3551.xml">
+<!ENTITY rfc3611 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3611.xml">
+<!ENTITY rfc4585 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4585.xml">
+<!ENTITY rfc5506 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5506.xml">
+<!ENTITY rfc5166 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5166.xml">
+<!ENTITY rfc5033 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5033.xml">
+<!ENTITY rfc5681 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5681.xml">
+<!ENTITY I-D.ietf-rmcat-cc-requirements PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-cc-requirements.xml">
+<!ENTITY I-D.ietf-avtcore-rtp-circuit-breakers PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-avtcore-rtp-circuit-breakers.xml">
+<!ENTITY I-D.ietf-ledbat-congestion PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ledbat-congestion.xml">
+<!ENTITY I-D.ietf-xrblock-rtcp-xr-qoe PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-xrblock-rtcp-xr-qoe.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc toc="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc symrefs="yes" ?>
+<rfc ipr="trust200902" docName="draft-singh-rmcat-cc-eval-04" category="info">
+    <!-- What is the category field value-->
+    <front>
+        <title abbrev="Evaluating Congestion Control for RMCAT">
+            Evaluating Congestion Control for Interactive Real-time Media
+            <!--Evaluation Criteria for RTP Congestion Avoidance Techniques -->
+        </title>
+
+        <author fullname="Varun Singh" initials="V" surname="Singh">
+            <organization>Aalto University</organization>
+            <address>
+                <postal>
+                    <street>School of Electrical Engineering</street>
+                    <street>Otakaari 5 A</street>
+                    <city>Espoo</city>
+                    <region>FIN</region>
+                    <code>02150</code>
+                    <country>Finland</country>
+                </postal>
+                <email>varun@comnet.tkk.fi</email>
+                <uri>http://www.netlab.tkk.fi/~varun/</uri>
+            </address>
+        </author>
+
+        <author initials="M." surname="Nagy" fullname="Marcin Nagy">
+            <organization>Aalto University</organization>
+            <address>
+                <postal>
+                    <street>School of Electrical Engineering</street>
+                    <street>Otakaari 5 A</street>
+                    <city>Espoo</city>
+                    <region>FIN</region>
+                    <code>02150</code>
+                    <country>Finland</country>
+                </postal>
+                <email>marcin.nagy@aalto.fi</email>
+            </address>
+        </author>
+
+        <author initials="J." surname="Ott" fullname="Joerg Ott">
+            <organization>Aalto University</organization>
+            <address>
+                <postal>
+                    <street>School of Electrical Engineering</street>
+                    <street>Otakaari 5 A</street>
+                    <city>Espoo</city>
+                    <region>FIN</region>
+                    <code>02150</code>
+                    <country>Finland</country>
+                </postal>
+                <email>jo@comnet.tkk.fi</email>
+            </address>
+        </author>
+
+        <author initials="L." surname="Eggert" fullname="Lars Eggert">
+            <organization abbrev="NetApp"> NetApp </organization>
+            <address>
+                <postal>
+                    <street>Sonnenallee 1</street>
+                    <code>85551</code> <city>Kirchheim</city>
+                    <country>Germany</country>
+                </postal>
+                <phone>+49 151 12055791</phone>
+                <email>lars@netapp.com</email>
+                <uri> http://eggert.org/ </uri>
+            </address>
+        </author>
+
+        <date year="2014"/>
+        <area>TSV</area>
+        <workgroup>RMCAT WG</workgroup>
+        <keyword>RTP</keyword>
+        <keyword>RTCP</keyword>
+        <keyword>Congestion Control</keyword>
+        <abstract>
+            <t></t>
+        </abstract>
+    </front>
+    <middle>
+        <section title="Introduction">
+
+            <t></t>
+
+        </section>
+
+        <section title="Terminology" anchor="sec-terminology">
+            <!--<t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+            "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+            "OPTIONAL" in this document are to be interpreted as described
+            in BCP 14, <xref target="RFC2119" /> and indicate requirement
+            levels for compliant implementations. </t> -->
+
+            <t> The terminology defined in <xref target="RFC3550">RTP</xref>,
+            <xref target="RFC3551">RTP Profile for Audio and Video Conferences
+            with Minimal Control</xref>, <xref target="RFC3611">RTCP Extended
+            Report (XR)</xref>, <xref target="RFC4585">Extended RTP Profile
+            for RTCP-based Feedback (RTP/AVPF)</xref> and <xref
+            target="RFC5506">Support for Reduced-Size RTCP</xref> apply.</t>
+        </section>
+
+
+        <section title="" anchor="cc-proposal">
+
+            <t></t>
+
+        </section>
+
+        <section title="Security Considerations">
+            <t>Security issues have not been discussed in this memo.</t>
+            <!-- Congestion Collapse, Denial of Service -->
+        </section>
+
+        <section title="IANA Considerations">
+            <t>There are no IANA impacts in this memo.</t>
+        </section>
+
+
+        <section title="Acknowledgements">
+          <t></t>
+        </section>
+    </middle>
+    <back>
+        <references title="Normative References">
+        <!--&rfc2119;-->
+        <!-- RTP related -->
+        &rfc3550;
+        &rfc3551;
+        &rfc3611;
+        &rfc4585;
+        &rfc5506;
+        <!--RMCAT related -->
+        &I-D.ietf-rmcat-cc-requirements;
+        &I-D.ietf-avtcore-rtp-circuit-breakers;
+        </references>
+
+        <references title="Informative References">
+
+        <reference anchor="Nagy14">
+            <front>
+            <title>Congestion Control using FEC for Conversational Multimedia Communication</title>
+            <author initials="M" surname="Nagy"></author>
+            <author initials="V" surname="Singh"></author>
+            <author initials="J"  surname="Ott"></author>
+            <author initials="L" surname="Eggert"></author>
+            <date month="3" year="2014" />
+            </front>
+            <seriesInfo name="Proc. of 5th ACM Internation Conference on  Multimedia Systems" value="" />
+        </reference>
+
+        </references>
+
+
+
+
+        <section anchor="App-cl" title="Change Log">
+            <t>Note to the RFC-Editor: please remove this section prior to
+            publication as an RFC.</t>
+            <section title="Changes in draft-singh-rmcat-adaptive-fec-00">
+            <t><list style="symbols">
+			<t>Updated references.</t>
+            </list></t>
+            </section>
+        </section>
+    </back>
+</rfc>
