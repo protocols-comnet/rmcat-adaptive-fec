@@ -5,10 +5,11 @@
 <!ENTITY rfc3551 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3551.xml">
 <!ENTITY rfc3611 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3611.xml">
 <!ENTITY rfc4585 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4585.xml">
+<!ENTITY rfc4588 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4588.xml">
+<!ENTITY rfc5109 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5109.xml">
 <!ENTITY rfc5506 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5506.xml">
-<!ENTITY rfc5166 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5166.xml">
-<!ENTITY rfc5033 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5033.xml">
 <!ENTITY rfc5681 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5681.xml">
+<!ENTITY rfc6363 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6363.xml">
 <!ENTITY I-D.ietf-rmcat-cc-requirements PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-cc-requirements.xml">
 <!ENTITY I-D.ietf-avtcore-rtp-circuit-breakers PUBLIC ""
@@ -122,8 +123,28 @@
             target="RFC5506">Support for Reduced-Size RTCP</xref> apply.</t>
         </section>
 
+        <section title="Concept: FEC for Congestion Control" anchor="fec-cc-concept">
 
-        <section title="" anchor="cc-proposal">
+            <t></t>
+
+        </section>
+
+        <section title="Design Features" anchor="cc-proposal">
+
+            <t></t>
+            <section title="FEC Scheme" anchor="fec-scheme">
+                <t>Block and Parity FEC</t>
+            </section>
+
+            <section title="FEC and RTP" anchor="fec-rtp">
+                <t>RFC4588, RFC5109, RFC6363</t>
+            </section>
+
+
+        </section>
+
+
+        <section title="Applicability to RMCAT" anchor="fec-cc-apply">
 
             <t></t>
 
@@ -159,6 +180,10 @@
 
         <references title="Informative References">
 
+        &rfc4588; <!-- RTP Retx payload -->
+        &rfc5109; <!-- RTP FEC payload -->
+        &rfc6363; <!--  Forward Error Correction (FEC) Framework -->
+
         <reference anchor="Nagy14">
             <front>
             <title>Congestion Control using FEC for Conversational Multimedia Communication</title>
@@ -172,9 +197,6 @@
         </reference>
 
         </references>
-
-
-
 
         <section anchor="App-cl" title="Change Log">
             <t>Note to the RFC-Editor: please remove this section prior to
