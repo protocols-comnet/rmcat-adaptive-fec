@@ -30,6 +30,7 @@
 <?rfc compact="yes" ?>
 <?rfc symrefs="yes" ?>
 <rfc ipr="trust200902" docName="draft-singh-rmcat-adaptive-fec-00" category="exp">
+  <!-- TODO: Experimental, right? -->
   <!-- What is the category field value-->
   <front>
     <title abbrev="Using FEC for Congestion Control">
@@ -107,7 +108,7 @@
         This document describes a new mechanism for conversational
         multimedia flows. The proposed mechanism uses Forward Error
         Correction (FEC) encoded RTP packets (redundant packets) along
-        side media packets to probe for available network capacity. A
+        side the media packets to probe for available network capacity. A
         straightforward interpretation is, the sending endpoint
         increases the sending rate by keeping the media rate constant
         but increases the amount of FEC. If no losses and discards occur,
@@ -129,10 +130,10 @@
         is widely used in voice telephony and video conferencing systems.
         Many of these systems run over best-effort UDP/IP networks, and are
         required to implement congestion to adapt the transmission rate of
-        the multimedia streams to match the available network capacity, while
+        the RTP streams to match the available network capacity, while
         maintaing the user-experience <xref target="I-D.ietf-rmcat-cc-requirements" />.
         The <xref target="I-D.ietf-avtcore-rtp-circuit-breakers">circuit breakers</xref>
-        describe a minimal set of conditions when an RTP media stream is causing
+        describe a minimal set of conditions when an RTP stream is causing
         severe congestion and should cease transmission. Consequently, the
         congestion control algorithm are expected to avoid triggering these
         conditions.
@@ -190,14 +191,18 @@ Resilience Schemes based on the network delay and observed packet loss">
       in BCP 14, <xref target="RFC2119" /> and indicate requirement
       levels for compliant implementations. </t>
 
-      <t> The terminology defined in <xref target="RFC3550">RTP</xref>,
-      <xref target="RFC3551">RTP Profile for Audio and Video Conferences
+      <!-- TODO: make terms consistent with taxonomy draft? -->
+      <!-- Remember: media packets of an SSRC is called RTP stream. -->
+      <t>
+        The terminology defined in <xref target="RFC3550">RTP</xref>,
+        <xref target="RFC3551">RTP Profile for Audio and Video Conferences
         with Minimal Control</xref>, <xref target="RFC3611">RTCP Extended
         Report (XR)</xref>, <xref target="RFC4585">Extended RTP Profile
         for RTCP-based Feedback (RTP/AVPF)</xref>, <xref target="RFC4588">
         RTP Retransmission Payload Format</xref>, <xref target="RFC6363">
         Forward Error Correction (FEC) Framework</xref>, and <xref
-        target="RFC5506">Support for Reduced-Size RTCP</xref> apply.</t>
+        target="RFC5506">Support for Reduced-Size RTCP</xref> apply.
+      </t>
     </section>
 
     <section title="Concept: FEC for Congestion Control" anchor="fec-cc-concept">
@@ -232,28 +237,55 @@ Resilience Schemes based on the network delay and observed packet loss">
 <figure align="center" anchor="fig-fec-sm" title="State machine of a
   Congestion Control enabling FEC.">
 <artwork align="center"><![CDATA[
-   +------------+          Good conditions            +-----------+
+   +------------+        (B) Good conditions          +-----------+
    |            |------------------------------------>|           |
-   |    STAY    |                                     |   PROBE   |
+   |   STEADY   |                                     |   PROBE   |
    |            |<------------------------------------|           |
    +------------+     Probed, but Loss recovered      +-----------+
-        |                                               |  |  |
-        |   ____________________________________________|  |  |
-        |  |                                               |  |
-        |  |                                               |  |
+     /\ |                                               |   /\ |
+     |  |(A)                                            |   |  |
+     |  |_______________________________________________|   |  |(C)
+ (B) |  |                      (A)                          |  |
+     |  \/                                              (B) |  \/
    +------------+                                     +------------+
-   |            |          Unstable conditions        |            |
+   |            |       (A) Unstable conditions       |            |
    |   REDUCE   |<------------------------------------|  INCREASE  |
    |            |                                     |            |
    +------------+                                     +------------+
 ]]></artwork>
 </figure>
-      <section title="State Machine" anchor="fec-sm">
+      <section title="States" anchor="fec-sm">
         <t>
           <xref target="fig-fec-sm" /> illustrates the the state machine of
           a congestion control algorithm incorporating FEC for probing. The
-          state-machine includes 4 states: STAY, PROBE, INCREASE, REDUCE.
+          state-machine includes 4 states: STEADY, PROBE, INCREASE, and REDUCE.
         </t>
+        <t><list style="symbols">
+          <t>
+            STEADY state: The congestion control keeps the same sending rate and
+            no additional FEC packets are generated for probing.
+          </t>
+          <t>
+            REDUCE state: The congestion control reduces the sending rate based
+            on the observed congestion cues, and generated no additional
+            FEC packets than the minimum required for error-resilience.
+          </t>
+          <t>
+            PROBE state: The congestion control observes no congestion (i.e.,
+            the transmission rate should be increased). The endpoint maintains
+            the same target media bit rate, and instead increases the amount of
+            FEC.
+          </t>
+          <t>
+            INCREASE state: Depending on the congestion feedback, i.e., if no
+            congestion is observed, the media transmission rate can be increased while
+            maintaining minimal amount of FEC for error protection. If packets are lost,
+            but the lost packets are recovered by the FEC packets, the congestion control
+            can keep the same media bit rate and reduce the amount of FEC (compared to
+            the previous PROBE state). If congestion is observed, the congestion control
+            can transition to the REDUCE state and decrease the sending rate.
+          </t>
+        </list></t>
       </section>
 
       <section title="FEC Scheme" anchor="fec-scheme">
@@ -267,7 +299,7 @@ Resilience Schemes based on the network delay and observed packet loss">
         </t>
         <t>
           The endpoint  MAY use a single-frame FEC or a multi-frame FEC for
-          protecting the media stream. A single-frame FEC protects against a
+          protecting the primary RTP stream. A single-frame FEC protects against a
           single packet loss and fails when burst loss occurs. Using multi-frame
           FEC helps mitigate these issues at the cost of higher overhead and
           latency in recovering lost packets. <xref target="Holmer13" /> shows

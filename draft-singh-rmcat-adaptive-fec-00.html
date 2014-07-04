@@ -377,7 +377,7 @@
 <link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
 <link href="#rfc.section.2" rel="Chapter" title="2 Terminology"/>
 <link href="#rfc.section.3" rel="Chapter" title="3 Concept: FEC for Congestion Control"/>
-<link href="#rfc.section.3.1" rel="Chapter" title="3.1 State Machine"/>
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 States"/>
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 FEC Scheme"/>
 <link href="#rfc.section.3.3" rel="Chapter" title="3.3 Applicability to other RMCAT Schemes"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Security Considerations"/>
@@ -396,8 +396,8 @@
   <meta name="dct.creator" content="Singh, V., Nagy, M., Ott, J., and L. Eggert" />
   <meta name="dct.identifier" content="urn:ietf:id:draft-singh-rmcat-adaptive-fec-00" />
   <meta name="dct.issued" scheme="ISO8601" content="2014-7-4" />
-  <meta name="dct.abstract" content="This document describes a new mechanism for conversational multimedia flows. The proposed mechanism uses Forward Error Correction (FEC) encoded RTP packets (redundant packets) along side media packets to probe for available network capacity. A straightforward interpretation is, the sending endpoint increases the sending rate by keeping the media rate constant but increases the amount of FEC. If no losses and discards occur, the endpoint can then increase the media rate. If losses occur, the redundant FEC packets help in recovering the lost packets.  Consequently, the endpoint can vary the FEC bit rate to conservatively (by a small amount) or aggressively (by a large amount) probe for available network capacity.  " />
-  <meta name="description" content="This document describes a new mechanism for conversational multimedia flows. The proposed mechanism uses Forward Error Correction (FEC) encoded RTP packets (redundant packets) along side media packets to probe for available network capacity. A straightforward interpretation is, the sending endpoint increases the sending rate by keeping the media rate constant but increases the amount of FEC. If no losses and discards occur, the endpoint can then increase the media rate. If losses occur, the redundant FEC packets help in recovering the lost packets.  Consequently, the endpoint can vary the FEC bit rate to conservatively (by a small amount) or aggressively (by a large amount) probe for available network capacity.  " />
+  <meta name="dct.abstract" content="This document describes a new mechanism for conversational multimedia flows. The proposed mechanism uses Forward Error Correction (FEC) encoded RTP packets (redundant packets) along side the media packets to probe for available network capacity. A straightforward interpretation is, the sending endpoint increases the sending rate by keeping the media rate constant but increases the amount of FEC. If no losses and discards occur, the endpoint can then increase the media rate. If losses occur, the redundant FEC packets help in recovering the lost packets.  Consequently, the endpoint can vary the FEC bit rate to conservatively (by a small amount) or aggressively (by a large amount) probe for available network capacity.  " />
+  <meta name="description" content="This document describes a new mechanism for conversational multimedia flows. The proposed mechanism uses Forward Error Correction (FEC) encoded RTP packets (redundant packets) along side the media packets to probe for available network capacity. A straightforward interpretation is, the sending endpoint increases the sending rate by keeping the media rate constant but increases the amount of FEC. If no losses and discards occur, the endpoint can then increase the media rate. If losses occur, the redundant FEC packets help in recovering the lost packets.  Consequently, the endpoint can vary the FEC bit rate to conservatively (by a small amount) or aggressively (by a large amount) probe for available network capacity.  " />
 
 </head>
 
@@ -445,7 +445,7 @@
   <h1 id="rfc.abstract">
   <a href="#rfc.abstract">Abstract</a>
 </h1>
-<p>This document describes a new mechanism for conversational multimedia flows. The proposed mechanism uses Forward Error Correction (FEC) encoded RTP packets (redundant packets) along side media packets to probe for available network capacity. A straightforward interpretation is, the sending endpoint increases the sending rate by keeping the media rate constant but increases the amount of FEC. If no losses and discards occur, the endpoint can then increase the media rate. If losses occur, the redundant FEC packets help in recovering the lost packets.  Consequently, the endpoint can vary the FEC bit rate to conservatively (by a small amount) or aggressively (by a large amount) probe for available network capacity.  </p>
+<p>This document describes a new mechanism for conversational multimedia flows. The proposed mechanism uses Forward Error Correction (FEC) encoded RTP packets (redundant packets) along side the media packets to probe for available network capacity. A straightforward interpretation is, the sending endpoint increases the sending rate by keeping the media rate constant but increases the amount of FEC. If no losses and discards occur, the endpoint can then increase the media rate. If losses occur, the redundant FEC packets help in recovering the lost packets.  Consequently, the endpoint can vary the FEC bit rate to conservatively (by a small amount) or aggressively (by a large amount) probe for available network capacity.  </p>
 <h1 id="rfc.status">
   <a href="#rfc.status">Status of This Memo</a>
 </h1>
@@ -467,7 +467,7 @@
 	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
 <li>2.   <a href="#rfc.section.2">Terminology</a></li>
 <li>3.   <a href="#rfc.section.3">Concept: FEC for Congestion Control</a></li>
-<li>3.1.   <a href="#rfc.section.3.1">State Machine</a></li>
+<li>3.1.   <a href="#rfc.section.3.1">States</a></li>
 <li>3.2.   <a href="#rfc.section.3.2">FEC Scheme</a></li>
 <li>3.3.   <a href="#rfc.section.3.3">Applicability to other RMCAT Schemes</a></li>
 <li>4.   <a href="#rfc.section.4">Security Considerations</a></li>
@@ -483,7 +483,7 @@
   </ul>
 
   <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> Introduction</h1>
-<p id="rfc.section.1.p.1">The <a href="#RFC3550">Real-time Transport Protocol (RTP)</a> <cite title="NONE">[RFC3550]</cite> is widely used in voice telephony and video conferencing systems.  Many of these systems run over best-effort UDP/IP networks, and are required to implement congestion to adapt the transmission rate of the multimedia streams to match the available network capacity, while maintaing the user-experience <a href="#I-D.ietf-rmcat-cc-requirements">[I-D.ietf-rmcat-cc-requirements]</a>.  The <a href="#I-D.ietf-avtcore-rtp-circuit-breakers">circuit breakers</a> <cite title="NONE">[I-D.ietf-avtcore-rtp-circuit-breakers]</cite> describe a minimal set of conditions when an RTP media stream is causing severe congestion and should cease transmission. Consequently, the congestion control algorithm are expected to avoid triggering these conditions.  </p>
+<p id="rfc.section.1.p.1">The <a href="#RFC3550">Real-time Transport Protocol (RTP)</a> <cite title="NONE">[RFC3550]</cite> is widely used in voice telephony and video conferencing systems.  Many of these systems run over best-effort UDP/IP networks, and are required to implement congestion to adapt the transmission rate of the RTP streams to match the available network capacity, while maintaing the user-experience <a href="#I-D.ietf-rmcat-cc-requirements">[I-D.ietf-rmcat-cc-requirements]</a>.  The <a href="#I-D.ietf-avtcore-rtp-circuit-breakers">circuit breakers</a> <cite title="NONE">[I-D.ietf-avtcore-rtp-circuit-breakers]</cite> describe a minimal set of conditions when an RTP stream is causing severe congestion and should cease transmission. Consequently, the congestion control algorithm are expected to avoid triggering these conditions.  </p>
 <p id="rfc.section.1.p.2">Conversational multimedia systems use Negative Acknowlegment (NACK), Forward Error Correction (FEC), and Reference Picture Selection (RPS) to protect against packet loss. These are used in addition to the codec-dependent resilience methods (for e.g., full intra-refresh and error-concealment). In this way, the multimedia system is anyway trading off part of the sending rate for redundancy or retransmissions to reduce the effects of packet loss. An endpoint often prefers using FEC in high latency networks where retransmissions may arrive later than the playout time of the packet (due to the size of the dejitter buffer) <a href="#Holmer13">[Holmer13]</a>. Therefore, the endpoint needs to adapt the transmission rate to best fit the changing network capacity and the amount of redundancy based on the observed/expected loss rate and network latency. <a href="#fig-apply-er">Figure 1</a> shows the applicatbility of different error-resilience schemes based on the end-to-end latency and the observed packet loss <a href="#Devadoss08">[Devadoss08]</a>.  </p>
 <div id="rfc.figure.1"/>
 <div id="fig-apply-er"/>
@@ -507,34 +507,43 @@
 <p id="rfc.section.1.p.3">In this document, we describe the use of FEC packets not only for error-resilience but also as a probing mechanism for congestion control (ramping up the transmission rate).  </p>
 <h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#sec-terminology" id="sec-terminology">Terminology</a></h1>
 <p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14, <a href="#RFC2119">[RFC2119]</a> and indicate requirement levels for compliant implementations. </p>
-<p id="rfc.section.2.p.2">The terminology defined in <a href="#RFC3550">RTP</a> <cite title="NONE">[RFC3550]</cite>, <a href="#RFC3551">RTP Profile for Audio and Video Conferences with Minimal Control</a> <cite title="NONE">[RFC3551]</cite>, <a href="#RFC3611">RTCP Extended Report (XR)</a> <cite title="NONE">[RFC3611]</cite>, <a href="#RFC4585">Extended RTP Profile for RTCP-based Feedback (RTP/AVPF)</a> <cite title="NONE">[RFC4585]</cite>, <a href="#RFC4588">RTP Retransmission Payload Format</a> <cite title="NONE">[RFC4588]</cite>, <a href="#RFC6363">Forward Error Correction (FEC) Framework</a> <cite title="NONE">[RFC6363]</cite>, and <a href="#RFC5506">Support for Reduced-Size RTCP</a> <cite title="NONE">[RFC5506]</cite> apply.</p>
+<p id="rfc.section.2.p.2">The terminology defined in <a href="#RFC3550">RTP</a> <cite title="NONE">[RFC3550]</cite>, <a href="#RFC3551">RTP Profile for Audio and Video Conferences with Minimal Control</a> <cite title="NONE">[RFC3551]</cite>, <a href="#RFC3611">RTCP Extended Report (XR)</a> <cite title="NONE">[RFC3611]</cite>, <a href="#RFC4585">Extended RTP Profile for RTCP-based Feedback (RTP/AVPF)</a> <cite title="NONE">[RFC4585]</cite>, <a href="#RFC4588">RTP Retransmission Payload Format</a> <cite title="NONE">[RFC4588]</cite>, <a href="#RFC6363">Forward Error Correction (FEC) Framework</a> <cite title="NONE">[RFC6363]</cite>, and <a href="#RFC5506">Support for Reduced-Size RTCP</a> <cite title="NONE">[RFC5506]</cite> apply.  </p>
 <h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#fec-cc-concept" id="fec-cc-concept">Concept: FEC for Congestion Control</a></h1>
 <p id="rfc.section.3.p.1">FEC is one method for providing error-resilience, it improves reliability by adding redundant data to the primary media flow, which is used by received to recover packets that have been lost due to congestion or bit-errors. The congestion control algorithm on the other hand aims at maximizing the network path utilization, but risks over-estimating the avaiable end-to-end network capacity leading to congestion (and therefore losses).  </p>
 <p id="rfc.section.3.p.2">The main idea behind using FEC for congestion control is as follows: the sending endpoint chooses a high FEC rate to aggressively probe for available capacity and conversely chooses a low FEC rate to conservatively probe for available capacity. During the ramp up, if a packet is lost and the FEC packet arrives in time for decoding, the receiver is be able to recover the lost packet; if no packet is lost, the sender is able to increase the media encoding rate by swapping out a part of the FEC rate.  This method can be especially useful when the sending rate is close to the bottleneck link rate: by choosing an appropriate FEC rate, the endpoint is able to probe for available capacity without changing the target media rate and therefore not affecting the user-experience.  Therefore, the congestion control algorithm is always able to probe for available capacity, as improved reliability compensates for possible errors resulting from overuse (i.e., increase in observed latency and/or losses).  </p>
 <div id="rfc.figure.2"/>
 <div id="fig-fec-sm"/>
 <pre>
-   +------------+          Good conditions            +-----------+
+   +------------+        (B) Good conditions          +-----------+
    |            |------------------------------------&gt;|           |
-   |    STAY    |                                     |   PROBE   |
+   |   STEADY   |                                     |   PROBE   |
    |            |&lt;------------------------------------|           |
    +------------+     Probed, but Loss recovered      +-----------+
-        |                                               |  |  |
-        |   ____________________________________________|  |  |
-        |  |                                               |  |
-        |  |                                               |  |
+     /\ |                                               |   /\ |
+     |  |(A)                                            |   |  |
+     |  |_______________________________________________|   |  |(C)
+ (B) |  |                      (A)                          |  |
+     |  \/                                              (B) |  \/
    +------------+                                     +------------+
-   |            |          Unstable conditions        |            |
+   |            |       (A) Unstable conditions       |            |
    |   REDUCE   |&lt;------------------------------------|  INCREASE  |
    |            |                                     |            |
    +------------+                                     +------------+
 </pre>
 <p class="figure">Figure 2: State machine of a    Congestion Control enabling FEC.</p>
-<h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> <a href="#fec-sm" id="fec-sm">State Machine</a></h1>
-<p><a href="#fig-fec-sm">Figure 2</a> illustrates the the state machine of a congestion control algorithm incorporating FEC for probing. The state-machine includes 4 states: STAY, PROBE, INCREASE, REDUCE.  </p>
+<h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> <a href="#fec-sm" id="fec-sm">States</a></h1>
+<p><a href="#fig-fec-sm">Figure 2</a> illustrates the the state machine of a congestion control algorithm incorporating FEC for probing. The state-machine includes 4 states: STEADY, PROBE, INCREASE, and REDUCE.  </p>
+<p/>
+
+<ul>
+  <li>STEADY state: The congestion control keeps the same sending rate and no additional FEC packets are generated for probing.  </li>
+  <li>REDUCE state: The congestion control reduces the sending rate based on the observed congestion cues, and generated no additional FEC packets than the minimum required for error-resilience.  </li>
+  <li>PROBE state: The congestion control observes no congestion (i.e., the transmission rate should be increased). The endpoint maintains the same target media bit rate, and instead increases the amount of FEC.  </li>
+  <li>INCREASE state: Depending on the congestion feedback, i.e., if no congestion is observed, the media transmission rate can be increased while maintaining minimal amount of FEC for error protection. If packets are lost, but the lost packets are recovered by the FEC packets, the congestion control can keep the same media bit rate and reduce the amount of FEC (compared to the previous PROBE state). If congestion is observed, the congestion control can transition to the REDUCE state and decrease the sending rate.  </li>
+</ul>
 <h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#fec-scheme" id="fec-scheme">FEC Scheme</a></h1>
 <p><a href="#RFC6363">[RFC6363]</a> describes a framework for using Forward Error Correction (FEC) codes with RTP and allows any FEC code to be used with the framework. For this proposal, the FEC packets are created by XORing RTP media packets, the resulting redundant RTP packets are encoded using the scheme defined in <a href="#RFC5109">[RFC5109]</a>.  </p>
-<p id="rfc.section.3.2.p.2">The endpoint  MAY use a single-frame FEC or a multi-frame FEC for protecting the media stream. A single-frame FEC protects against a single packet loss and fails when burst loss occurs. Using multi-frame FEC helps mitigate these issues at the cost of higher overhead and latency in recovering lost packets. <a href="#Holmer13">[Holmer13]</a> shows examples of using a single- and multi-frame FEC.  </p>
+<p id="rfc.section.3.2.p.2">The endpoint  MAY use a single-frame FEC or a multi-frame FEC for protecting the primary RTP stream. A single-frame FEC protects against a single packet loss and fails when burst loss occurs. Using multi-frame FEC helps mitigate these issues at the cost of higher overhead and latency in recovering lost packets. <a href="#Holmer13">[Holmer13]</a> shows examples of using a single- and multi-frame FEC.  </p>
 <p id="rfc.section.3.2.p.3">The receiving endpoint may report the post-repair loss (or residual loss) using either the report block defined in <a href="#RFC5725">[RFC5725]</a> (Run-length encoding of packets repaired) or in <a href="#I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count">[I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count]</a> (packet count of repaired packets).  </p>
 <h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to other RMCAT Schemes</a></h1>
 <p id="rfc.section.3.3.p.1">[Open issue: The current implementation is delay based and is documented in <a href="#Nagy14">[Nagy14]</a>. However, we would like to generalize the concept and apply it to different RMCAT algorithms for e.g., <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite>, etc.] </p>
