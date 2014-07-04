@@ -258,7 +258,7 @@ Resilience Schemes based on the network delay and observed packet loss">
 </figure>
       <section title="States" anchor="fec-sm">
         <t>
-          <xref target="fig-fec-sm" /> illustrates the the state machine of
+          The <xref target="fig-fec-sm" /> illustrates the the state machine of
           a congestion control algorithm incorporating FEC for probing. The
           state-machine includes 4 states: STEADY, PROBE, INCREASE, and REDUCE.
         </t>
@@ -296,31 +296,60 @@ Resilience Schemes based on the network delay and observed packet loss">
 
       <section title="Framework" anchor="fec-fw">
       <t>
-
+        The <xref target="fig-fec-int" /> shows the interaction between the
+        rate control module, the RTP and the FEC module.
       </t>
 
-<figure align="center" anchor="fig-fec-sm" title="Interaction
+      <t>
+        At the sender,
+        the rate control module calculates the new bit rate. If the new bit
+        rate is higher than the previous than the previous bit rate indicates
+        to the FEC module that the congestion control intends to probe.
+        The FEC module depending on its internal state machine decides to
+        add FEC for probing or not. Thereafter it indicates to the rate control
+        module the bit rate remaining for the RTP media stream, which may be
+        less than equal to the calculated bit rate.
+      </t>
+      <t>
+        At the reciver,
+        the FEC module reconstructs lost packets in the primary stream from the
+        packets received in the repair stream. If packets are repair it generates
+        the post-repair loss report (discussed in <xref target="fec-scheme" />)
+        for the corresponding RTP packets.
+      </t>
+      <t>
+        At the sender,
+        The FEC module also receives the RTCP Feedback related to the primary stream
+        and any post-repair loss report. It uses the information from these RTCP
+        reports to calculate the effectiveness of FEC for congestion control and is
+        also the basis for changing its internal state.
+      </t>
+<figure align="center" anchor="fig-fec-int" title="Interaction
   of Congestion Control and FEC Module.">
 <artwork align="center"><![CDATA[
 + - - - - - - - - - - - - - - - - - - - - - - - -+
 | +--------------------------------------------+ |
   |            Media Encoder/Decoder           |
 | +--------------------------------------------+ |
-            |                            |
+            |                           |
 | +- -- -- -- -- -- -- -+        +- -- -- -- -+  |
   |    Rate Control     |        |     RTP    |
-| |                     |        |   Queue    |  |
+| |       Module        |        |    Queue   |  |
   +- -- -- -- -- -- -- -+        +- -- -- -- -+
-|   ^           |                        |       |
-    |           |                        |Source
-|   | R         +-----------------+      |  RTP  |
-    | T                           |      |
-|   | C    +--------------+     +------------+   |
-    | P    |  FEC Scheme  |<--->| FEC Module |
-|   |      +--------------+     +------------+   |
-    |                             |      |
-|   |                      Repair |      |Source |
-    |                       RTP   |      |  RTP
+|   ^        |                          |        |
+    |        |                          | Source
+|   | R      +--------------------+     |  RTP   |
+    | T                           |     |
+|   | C                           |     |        |
+    | P                           |     |
+|   |     +----------+     +----------------+    |
+    | F   | FEC Code |<--->|   FEC Module   |
+|   | B   +----------+     +----------------+    |
+    |                        |        |  |
+|   |------------------------+        |  |       |
+    |        RTCP FB           Repair |  | Source
+|   |                            RTP  |  |   RTP |
+    |                                 |  |
 | +--------------------------------------------+ |
   |             Transport Layer (UDP)          |
 | +--------------------------------------------+ |
