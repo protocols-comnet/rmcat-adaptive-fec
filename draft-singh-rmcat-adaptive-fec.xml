@@ -112,7 +112,7 @@
         Correction (FEC) encoded RTP packets (redundant packets) along
         side the media packets to probe for available network capacity. A
         straightforward interpretation is, the sending endpoint
-        increases the sending rate by keeping the media rate constant
+        increases the transmission rate by keeping the media rate constant
         but increases the amount of FEC. If no losses and discards occur,
         the endpoint can then increase the media rate. If losses occur,
         the redundant FEC packets help in recovering the lost packets.
@@ -147,7 +147,7 @@
         to protect against packet loss. These are used in addition to the
         codec-dependent resilience methods (for e.g., full intra-refresh and
         error-concealment). In this way, the multimedia system is anyway
-        trading off part of the sending rate for redundancy or retransmissions
+        trading off part of the transmission rate for redundancy or retransmissions
         to reduce the effects of packet loss. An endpoint often prefers using
         FEC in high latency networks where retransmissions may arrive later than
         the playout time of the packet (due to the size of the dejitter buffer)
@@ -226,7 +226,7 @@ Resilience Schemes based on the network delay and observed packet loss">
         the FEC packet arrives in time for decoding, the receiver is be able to
         recover the lost packet; if no packet is lost, the sender is able to
         increase the media encoding rate by swapping out a part of the FEC rate.
-        This method can be especially useful when the sending rate is close to
+        This method can be especially useful when the transmission rate is close to
         the bottleneck link rate: by choosing an appropriate FEC rate, the
         endpoint is able to probe for available capacity without changing the
         target media rate and therefore not affecting the user-experience.
@@ -264,13 +264,13 @@ Resilience Schemes based on the network delay and observed packet loss">
         </t>
         <t><list style="symbols">
           <t>
-            STEADY state: The congestion control keeps the same sending rate and
-            no additional FEC packets are generated for probing. This is a
+            STEADY state: The congestion control keeps the same target media rate
+            and no additional FEC packets are generated for probing. This is a
             transient state, after which the congestion control attempts to
-            increase the sending rate.
+            increase the transmission rate.
           </t>
           <t>
-            REDUCE state: The congestion control reduces the sending rate based
+            REDUCE state: The congestion control reduces the transmission rate based
             on the observed congestion cues, and generated no additional
             FEC packets than the minimum required for error-resilience. If
             in subsequent reports the conditions improve, the congestion control
@@ -289,7 +289,7 @@ Resilience Schemes based on the network delay and observed packet loss">
             but the lost packets are recovered by the FEC packets, the congestion control
             can keep the same media bit rate and reduce the amount of FEC (compared to
             the previous PROBE state). If congestion is observed, the congestion control
-            can transition to the REDUCE state and decrease the sending rate.
+            can transition to the REDUCE state and decrease the transmission rate.
           </t>
         </list></t>
       </section>
