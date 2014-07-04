@@ -339,8 +339,14 @@ Resilience Schemes based on the network delay and observed packet loss">
 
 
     <section title="Acknowledgements">
-      <t>This document is based on the results published in <xref target="Nagy14" />,
-        it has benefited from several rounds of peer-review and hallway discussions.
+      <t>
+        This document is based on the results published in <xref target="Nagy14" />.
+      </t>
+      <t>The work of Varun Singh, and Joerg Ott has been partially supported by the
+        European Institute of Innovation and Technology (EIT) ICT Labs
+        activity RCLD 11882. The views expressed here are those of the author(s) only.
+        Neither the European Commission nor the EITICT labs is liable for any use that
+        may be made of the information in this document.
       </t>
     </section>
   </middle>

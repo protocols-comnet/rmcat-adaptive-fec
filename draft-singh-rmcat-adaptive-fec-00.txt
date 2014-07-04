@@ -299,8 +299,14 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
 6.  Acknowledgements
 
-   This document is based on the results published in [Nagy14], it has
-   benefited from several rounds of peer-review and hallway discussions.
+   This document is based on the results published in [Nagy14].
+
+   The work of Varun Singh, and Joerg Ott has been partially supported
+   by the European Institute of Innovation and Technology (EIT) ICT Labs
+   activity RCLD 11882.  The views expressed here are those of the
+   author(s) only.  Neither the European Commission nor the EITICT labs
+   is liable for any use that may be made of the information in this
+   document.
 
 7.  References
 
@@ -321,14 +327,8 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Protocol Extended Reports (RTCP XR)", RFC 3611, November
               2003.
 
-   [RFC4585]  Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey,
-              "Extended RTP Profile for Real-time Transport Control
-              Protocol (RTCP)-Based Feedback (RTP/AVPF)", RFC 4585, July
-              2006.
 
-   [RFC5506]  Johansson, I. and M. Westerlund, "Support for Reduced-Size
-              Real-Time Transport Control Protocol (RTCP): Opportunities
-              and Consequences", RFC 5506, April 2009.
+
 
 
 
@@ -337,6 +337,15 @@ Singh, et al.            Expires January 5, 2015                [Page 6]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
+
+   [RFC4585]  Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey,
+              "Extended RTP Profile for Real-time Transport Control
+              Protocol (RTCP)-Based Feedback (RTP/AVPF)", RFC 4585, July
+              2006.
+
+   [RFC5506]  Johansson, I. and M. Westerlund, "Support for Reduced-Size
+              Real-Time Transport Control Protocol (RTCP): Opportunities
+              and Consequences", RFC 5506, April 2009.
 
    [I-D.ietf-avtcore-rtp-circuit-breakers]
               Perkins, C. and V. Singh, "Multimedia Congestion Control:
@@ -377,6 +386,14 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Communication", draft-alvestrand-rmcat-congestion-02 (work
               in progress), February 2014.
 
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 7]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
    [I-D.sarker-rmcat-eval-test]
               Sarker, Z., Singh, V., Zhu, X., and M. Ramalho, "Test
               Cases for Evaluating RMCAT Proposals", draft-sarker-rmcat-
@@ -386,13 +403,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Control using FEC for Conversational Multimedia
               Communication", Proc. of 5th ACM Internation Conference on
               Multimedia Systems (MMSys 2014) , 3 2014.
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 7]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
 
    [Devadoss08]
               Devadoss, J., Singh, V., Ott, J., Liu, C., Wang, Y-K., and
@@ -425,16 +435,6 @@ Authors' Addresses
    URI:   http://www.netlab.tkk.fi/~varun/
 
 
-   Marcin Nagy
-   Aalto University
-   School of Electrical Engineering
-   Otakaari 5 A
-   Espoo, FIN  02150
-   Finland
-
-   Email: marcin.nagy@aalto.fi
-
-
 
 
 
@@ -448,6 +448,16 @@ Authors' Addresses
 Singh, et al.            Expires January 5, 2015                [Page 8]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+   Marcin Nagy
+   Aalto University
+   School of Electrical Engineering
+   Otakaari 5 A
+   Espoo, FIN  02150
+   Finland
+
+   Email: marcin.nagy@aalto.fi
 
 
    Joerg Ott
@@ -469,16 +479,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    Phone: +49 151 12055791
    Email: lars@netapp.com
    URI:   http://eggert.org/
-
-
-
-
-
-
-
-
-
-
 
 
 
