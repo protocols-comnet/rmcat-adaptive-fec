@@ -1,0 +1,336 @@
+
+
+
+
+RMCAT WG                                                        V. Singh
+Internet-Draft                                                   M. Nagy
+Intended status: Experimental                                     J. Ott
+Expires: January 5, 2015                                Aalto University
+                                                               L. Eggert
+                                                                  NetApp
+                                                            July 4, 2014
+
+
+         Congestion Control Using FEC for Conversational Media
+                   draft-singh-rmcat-adaptive-fec-00
+
+Abstract
+
+   This document describes a new mechanism for conversational multimedia
+   flows.  The proposed mechanism uses Forward Error Correction (FEC)
+   encoded RTP packets (redundant packets) along side media packets to
+   probe for available network capacity.  A straightforward
+   interpretation is, the sending endpoint increases the sending rate by
+   keeping the media rate constant but increases the amount of FEC.  If
+   no losses and discards occur, the endpoint can then increase the
+   media rate.  If losses occur, the redundant FEC packets help in
+   recovering the lost packets.  Consequently, the endpoint can vary the
+   FEC bit rate to conservatively (by a small amount) or aggressively
+   (by a large amount) probe for available network capacity.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on January 5, 2015.
+
+Copyright Notice
+
+   Copyright (c) 2014 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 1]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  Concept: FEC for Congestion Control . . . . . . . . . . . . .   3
+   4.  Design Features . . . . . . . . . . . . . . . . . . . . . . .   3
+     4.1.  FEC Scheme  . . . . . . . . . . . . . . . . . . . . . . .   4
+     4.2.  FEC and RTP . . . . . . . . . . . . . . . . . . . . . . .   4
+   5.  Applicability to RMCAT  . . . . . . . . . . . . . . . . . . .   4
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4
+   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   4
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .   5
+   Appendix A.  Change Log . . . . . . . . . . . . . . . . . . . . .   5
+     A.1.  Changes in draft-singh-rmcat-adaptive-fec-00  . . . . . .   6
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
+
+1.  Introduction
+
+   The Real-time Transport Protocol (RTP) [RFC3550] is widely used in
+   voice telephony and video conferencing systems.  Many of these
+   systems run over best-effort UDP/IP networks, and are required to
+   implement congestion to adapt the transmission rate of the multimedia
+   streams to match the available network capacity, while maintaing the
+   user-experience [I-D.ietf-rmcat-cc-requirements].  The circuit
+   breakers [I-D.ietf-avtcore-rtp-circuit-breakers] describe a minimal
+   set of conditions when an RTP media stream is causing severe
+   congestion and should cease transmission.  Consequently, the
+   congestion control algorithm are expected to avoid triggering these
+   conditions.
+
+   Conversational multimedia systems use Negative Acknowlegment (NACK),
+   Forward Error Correction (FEC), and Reference Picture Selection (RPS)
+   to protect against packet loss.  These are used in addition to the
+   codec-dependent resilience methods (for e.g., full intra-refresh and
+   error-concealment).  In this way, the multimedia system is anyway
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 2]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+   trading off part of the sending rate for redundancy or
+   retransmissions to reduce the effects of packet loss.  An endpoint
+   often prefers using FEC in high latency networks where
+   retransmissions may arrive later than the playout time of the packet
+   (due to the size of the dejitter buffer) [Holmer13].  Therefore, the
+   endpoint needs to adapt the transmission rate to best fit the
+   changing network capacity and the amount of redundancy based on the
+   observed/expected loss rate and network latency.  Figure 1 shows the
+   applicatbility of different error-resilience schemes based on the
+   end-to-end latency and the observed packet loss [Devadoss08].
+
+                        ^             __________
+                        |            |          |
+                        |            |    UEP   |
+                      l |____________|____      |
+                      a |            |    |     |
+                      t |       RPS  |    |     |
+                      e |_______     |    |     |
+                      n |       |    |    |     |
+                      c |       |    |____|_____|
+                      y | NACK  |         |
+                        |       |         |
+                        +---------------------------->
+                               Packet loss
+
+     Figure 1: Applicability of Error Resilience Schemes based on the
+                  network delay and observed packet loss
+
+   In this document, we describe the use of FEC packets not only for
+   error-resilience but also as a probing mechanism for congestion
+   control (ramping up the transmission rate).
+
+2.  Terminology
+
+   The terminology defined in RTP [RFC3550], RTP Profile for Audio and
+   Video Conferences with Minimal Control [RFC3551], RTCP Extended
+   Report (XR) [RFC3611], Extended RTP Profile for RTCP-based Feedback
+   (RTP/AVPF) [RFC4585] and Support for Reduced-Size RTCP [RFC5506]
+   apply.
+
+3.  Concept: FEC for Congestion Control
+
+4.  Design Features
+
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 3]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+4.1.  FEC Scheme
+
+   Block and Parity FEC
+
+4.2.  FEC and RTP
+
+   RFC4588, RFC5109, RFC6363
+
+5.  Applicability to RMCAT
+
+6.  Security Considerations
+
+   Security issues have not been discussed in this memo.
+
+7.  IANA Considerations
+
+   There are no IANA impacts in this memo.
+
+8.  Acknowledgements
+
+9.  References
+
+9.1.  Normative References
+
+   [RFC3550]  Schulzrinne, H., Casner, S., Frederick, R., and V.
+              Jacobson, "RTP: A Transport Protocol for Real-Time
+              Applications", STD 64, RFC 3550, July 2003.
+
+   [RFC3551]  Schulzrinne, H. and S. Casner, "RTP Profile for Audio and
+              Video Conferences with Minimal Control", STD 65, RFC 3551,
+              July 2003.
+
+   [RFC3611]  Friedman, T., Caceres, R., and A. Clark, "RTP Control
+              Protocol Extended Reports (RTCP XR)", RFC 3611, November
+              2003.
+
+   [RFC4585]  Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey,
+              "Extended RTP Profile for Real-time Transport Control
+              Protocol (RTCP)-Based Feedback (RTP/AVPF)", RFC 4585, July
+              2006.
+
+   [RFC5506]  Johansson, I. and M. Westerlund, "Support for Reduced-Size
+              Real-Time Transport Control Protocol (RTCP): Opportunities
+              and Consequences", RFC 5506, April 2009.
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 4]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+   [I-D.ietf-rmcat-cc-requirements]
+              Jesup, R., "Congestion Control Requirements For RMCAT",
+              draft-ietf-rmcat-cc-requirements-02 (work in progress),
+              February 2014.
+
+   [I-D.ietf-avtcore-rtp-circuit-breakers]
+              Perkins, C. and V. Singh, "Multimedia Congestion Control:
+              Circuit Breakers for Unicast RTP Sessions", draft-ietf-
+              avtcore-rtp-circuit-breakers-05 (work in progress),
+              February 2014.
+
+9.2.  Informative References
+
+   [RFC4588]  Rey, J., Leon, D., Miyazaki, A., Varsa, V., and R.
+              Hakenberg, "RTP Retransmission Payload Format", RFC 4588,
+              July 2006.
+
+   [RFC5109]  Li, A., "RTP Payload Format for Generic Forward Error
+              Correction", RFC 5109, December 2007.
+
+   [RFC6363]  Watson, M., Begen, A., and V. Roca, "Forward Error
+              Correction (FEC) Framework", RFC 6363, October 2011.
+
+   [Nagy14]   Nagy, M., Singh, V., Ott, J., and L. Eggert, "Congestion
+              Control using FEC for Conversational Multimedia
+              Communication", Proc. of 5th ACM Internation Conference on
+              Multimedia Systems (MMSys 2014) , 3 2014.
+
+   [Devadoss08]
+              Devadoss, J., Singh, V., Ott, J., Liu, C., Wang, Y-K., and
+              I. Curcio, "Evaluation of Error Resilience Mechanisms for
+              3G Conversational Video", Proc. of IEEE International
+              Symposium on Multimedia (ISM 2008) , 3 2014.
+
+   [Holmer13]
+              Holmer, S., Shemer, M., and M. Paniconi, "Handling Packet
+              Loss in WebRTC", Proc. of IEEE International Conference on
+              Image Processing (ICIP 2013) , 9 2013.
+
+Appendix A.  Change Log
+
+   Note to the RFC-Editor: please remove this section prior to
+   publication as an RFC.
+
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 5]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+A.1.  Changes in draft-singh-rmcat-adaptive-fec-00
+
+   o  Updated references.
+
+Authors' Addresses
+
+   Varun Singh
+   Aalto University
+   School of Electrical Engineering
+   Otakaari 5 A
+   Espoo, FIN  02150
+   Finland
+
+   Email: varun@comnet.tkk.fi
+   URI:   http://www.netlab.tkk.fi/~varun/
+
+
+   Marcin Nagy
+   Aalto University
+   School of Electrical Engineering
+   Otakaari 5 A
+   Espoo, FIN  02150
+   Finland
+
+   Email: marcin.nagy@aalto.fi
+
+
+   Joerg Ott
+   Aalto University
+   School of Electrical Engineering
+   Otakaari 5 A
+   Espoo, FIN  02150
+   Finland
+
+   Email: jo@comnet.tkk.fi
+
+
+   Lars Eggert
+   NetApp
+   Sonnenallee 1
+   Kirchheim  85551
+   Germany
+
+   Phone: +49 151 12055791
+   Email: lars@netapp.com
+   URI:   http://eggert.org/
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 6]
