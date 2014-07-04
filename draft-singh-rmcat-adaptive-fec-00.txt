@@ -233,11 +233,15 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    4 states: STEADY, PROBE, INCREASE, and REDUCE.
 
    o  STEADY state: The congestion control keeps the same sending rate
-      and no additional FEC packets are generated for probing.
+      and no additional FEC packets are generated for probing.  This is
+      a transient state, after which the congestion control attempts to
+      increase the sending rate.
 
    o  REDUCE state: The congestion control reduces the sending rate
       based on the observed congestion cues, and generated no additional
-      FEC packets than the minimum required for error-resilience.
+      FEC packets than the minimum required for error-resilience.  If in
+      subsequent reports the conditions improve, the congestion control
+      can directly transition to the probe state.
 
    o  PROBE state: The congestion control observes no congestion (i.e.,
       the transmission rate should be increased).  The endpoint
@@ -269,11 +273,7 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    overhead and latency in recovering lost packets.  [Holmer13] shows
    examples of using a single- and multi-frame FEC.
 
-   The receiving endpoint may report the post-repair loss (or residual
-   loss) using either the report block defined in [RFC5725] (Run-length
-   encoding of packets repaired) or in
-   [I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count] (packet count of
-   repaired packets).
+
 
 
 
@@ -281,6 +281,12 @@ Singh, et al.            Expires January 5, 2015                [Page 5]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
+
+   The receiving endpoint may report the post-repair loss (or residual
+   loss) using either the report block defined in [RFC5725] (Run-length
+   encoding of packets repaired) or in
+   [I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count] (packet count of
+   repaired packets).
 
 3.3.  Applicability to other RMCAT Schemes
 
@@ -323,12 +329,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Video Conferences with Minimal Control", STD 65, RFC 3551,
               July 2003.
 
-   [RFC3611]  Friedman, T., Caceres, R., and A. Clark, "RTP Control
-              Protocol Extended Reports (RTCP XR)", RFC 3611, November
-              2003.
-
-
-
 
 
 
@@ -337,6 +337,10 @@ Singh, et al.            Expires January 5, 2015                [Page 6]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
+
+   [RFC3611]  Friedman, T., Caceres, R., and A. Clark, "RTP Control
+              Protocol Extended Reports (RTCP XR)", RFC 3611, November
+              2003.
 
    [RFC4585]  Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey,
               "Extended RTP Profile for Real-time Transport Control
@@ -380,11 +384,7 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               draft-ietf-rmcat-cc-requirements-02 (work in progress),
               February 2014.
 
-   [I-D.alvestrand-rmcat-congestion]
-              Holmer, S., Cicco, L., Mascolo, S., and H. Alvestrand, "A
-              Google Congestion Control Algorithm for Real-Time
-              Communication", draft-alvestrand-rmcat-congestion-02 (work
-              in progress), February 2014.
+
 
 
 
@@ -393,6 +393,12 @@ Singh, et al.            Expires January 5, 2015                [Page 7]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
+
+   [I-D.alvestrand-rmcat-congestion]
+              Holmer, S., Cicco, L., Mascolo, S., and H. Alvestrand, "A
+              Google Congestion Control Algorithm for Real-Time
+              Communication", draft-alvestrand-rmcat-congestion-02 (work
+              in progress), February 2014.
 
    [I-D.sarker-rmcat-eval-test]
               Sarker, Z., Singh, V., Zhu, X., and M. Ramalho, "Test
@@ -433,12 +439,6 @@ Authors' Addresses
 
    Email: varun@comnet.tkk.fi
    URI:   http://www.netlab.tkk.fi/~varun/
-
-
-
-
-
-
 
 
 
