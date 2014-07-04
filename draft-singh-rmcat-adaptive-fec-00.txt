@@ -72,18 +72,18 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  Concept: FEC for Congestion Control . . . . . . . . . . . . .   3
-     3.1.  State Machine . . . . . . . . . . . . . . . . . . . . . .   4
-     3.2.  FEC Scheme  . . . . . . . . . . . . . . . . . . . . . . .   4
-     3.3.  Applicability to RMCAT  . . . . . . . . . . . . . . . . .   5
+   3.  Concept: FEC for Congestion Control . . . . . . . . . . . . .   4
+     3.1.  State Machine . . . . . . . . . . . . . . . . . . . . . .   5
+     3.2.  FEC Scheme  . . . . . . . . . . . . . . . . . . . . . . .   5
+     3.3.  Applicability to other RMCAT Schemes  . . . . . . . . . .   5
    4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
    Appendix A.  Simulations  . . . . . . . . . . . . . . . . . . . .   7
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
@@ -147,6 +147,11 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
 2.  Terminology
 
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in BCP 14, [RFC2119] and
+   indicate requirement levels for compliant implementations.
+
    The terminology defined in RTP [RFC3550], RTP Profile for Audio and
    Video Conferences with Minimal Control [RFC3551], RTCP Extended
    Report (XR) [RFC3611], Extended RTP Profile for RTCP-based Feedback
@@ -154,13 +159,8 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    Forward Error Correction (FEC) Framework [RFC6363], and Support for
    Reduced-Size RTCP [RFC5506] apply.
 
-3.  Concept: FEC for Congestion Control
 
-   FEC is one method for providing error-resilience, it improves
-   reliability by adding redundant data to the primary media flow, which
-   is used by received to recover packets that have been lost due to
-   congestion or bit-errors.  The congestion control algorithm on the
-   other hand aims at maximizing the network path utilization, but risks
+
 
 
 
@@ -170,6 +170,13 @@ Singh, et al.            Expires January 5, 2015                [Page 3]
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
+3.  Concept: FEC for Congestion Control
+
+   FEC is one method for providing error-resilience, it improves
+   reliability by adding redundant data to the primary media flow, which
+   is used by received to recover packets that have been lost due to
+   congestion or bit-errors.  The congestion control algorithm on the
+   other hand aims at maximizing the network path utilization, but risks
    over-estimating the avaiable end-to-end network capacity leading to
    congestion (and therefore losses).
 
@@ -207,6 +214,18 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
        Figure 2: State machine of a Congestion Control enabling FEC.
 
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 4]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
 3.1.  State Machine
 
    Figure 2 illustrates the the state machine of a congestion control
@@ -218,14 +237,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    [RFC6363] describes a framework for using Forward Error Correction
    (FEC) codes with RTP and allows any FEC code to be used with the
    framework.  For this proposal, the FEC packets are created by XORing
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 4]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    RTP media packets, the resulting redundant RTP packets are encoded
    using the scheme defined in [RFC5109].
 
@@ -236,7 +247,13 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    and latency in recovering lost packets.  [Holmer13] shows examples of
    using a single- and multi-frame FEC.
 
-3.3.  Applicability to RMCAT
+   The receiving endpoint may report the post-repair loss (or residual
+   loss) using either the report block defined in [RFC5725] (Run-length
+   encoding of packets repaired) or in
+   [I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count] (packet count of
+   repaired packets).
+
+3.3.  Applicability to other RMCAT Schemes
 
    [Open issue: The current implementation is delay based and is
    documented in [Nagy14].  However, we would like to generalize the
@@ -256,9 +273,21 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    This document is based on the results published in [Nagy14], it has
    benefited from several rounds of peer-review and hallway discussions.
 
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 5]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
 7.  References
 
 7.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
 
    [RFC3550]  Schulzrinne, H., Casner, S., Frederick, R., and V.
               Jacobson, "RTP: A Transport Protocol for Real-Time
@@ -272,16 +301,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Protocol Extended Reports (RTCP XR)", RFC 3611, November
               2003.
 
-
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 5]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    [RFC4585]  Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey,
               "Extended RTP Profile for Real-time Transport Control
               Protocol (RTCP)-Based Feedback (RTP/AVPF)", RFC 4585, July
@@ -291,16 +310,33 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Real-Time Transport Control Protocol (RTCP): Opportunities
               and Consequences", RFC 5506, April 2009.
 
-   [I-D.ietf-rmcat-cc-requirements]
-              Jesup, R., "Congestion Control Requirements For RMCAT",
-              draft-ietf-rmcat-cc-requirements-02 (work in progress),
-              February 2014.
-
    [I-D.ietf-avtcore-rtp-circuit-breakers]
               Perkins, C. and V. Singh, "Multimedia Congestion Control:
               Circuit Breakers for Unicast RTP Sessions", draft-ietf-
               avtcore-rtp-circuit-breakers-05 (work in progress),
               February 2014.
+
+   [RFC5109]  Li, A., "RTP Payload Format for Generic Forward Error
+              Correction", RFC 5109, December 2007.
+
+   [RFC5725]  Begen, A., Hsu, D., and M. Lague, "Post-Repair Loss RLE
+              Report Block Type for RTP Control Protocol (RTCP) Extended
+              Reports (XRs)", RFC 5725, February 2010.
+
+   [I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count]
+              Huang, R. and V. Singh, "RTP Control Protocol (RTCP)
+              Extended Report (XR) for Post-Repair Loss Count Metrics",
+              draft-ietf-xrblock-rtcp-xr-post-repair-loss-count-05 (work
+              in progress), June 2014.
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 6]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
 
 7.2.  Informative References
 
@@ -308,11 +344,13 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Hakenberg, "RTP Retransmission Payload Format", RFC 4588,
               July 2006.
 
-   [RFC5109]  Li, A., "RTP Payload Format for Generic Forward Error
-              Correction", RFC 5109, December 2007.
-
    [RFC6363]  Watson, M., Begen, A., and V. Roca, "Forward Error
               Correction (FEC) Framework", RFC 6363, October 2011.
+
+   [I-D.ietf-rmcat-cc-requirements]
+              Jesup, R., "Congestion Control Requirements For RMCAT",
+              draft-ietf-rmcat-cc-requirements-02 (work in progress),
+              February 2014.
 
    [I-D.alvestrand-rmcat-congestion]
               Holmer, S., Cicco, L., Mascolo, S., and H. Alvestrand, "A
@@ -329,14 +367,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Control using FEC for Conversational Multimedia
               Communication", Proc. of 5th ACM Internation Conference on
               Multimedia Systems (MMSys 2014) , 3 2014.
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 6]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
 
    [Devadoss08]
               Devadoss, J., Singh, V., Ott, J., Liu, C., Wang, Y-K., and
@@ -355,6 +385,14 @@ Appendix A.  Simulations
    paper for ns-2 and testbed results; more results based on the
    scenarios listed in [I-D.sarker-rmcat-eval-test] will be published
    shorty.
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 7]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
 
 Authors' Addresses
 
@@ -379,21 +417,6 @@ Authors' Addresses
    Email: marcin.nagy@aalto.fi
 
 
-
-
-
-
-
-
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 7]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    Joerg Ott
    Aalto University
    School of Electrical Engineering
@@ -413,29 +436,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    Phone: +49 151 12055791
    Email: lars@netapp.com
    URI:   http://eggert.org/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

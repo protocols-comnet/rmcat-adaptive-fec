@@ -10,14 +10,15 @@
 <!ENTITY rfc5506 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5506.xml">
 <!ENTITY rfc5681 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5681.xml">
 <!ENTITY rfc6363 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6363.xml">
+<!ENTITY rfc5725 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5725.xml">
 <!ENTITY I-D.ietf-rmcat-cc-requirements PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-cc-requirements.xml">
 <!ENTITY I-D.ietf-avtcore-rtp-circuit-breakers PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-avtcore-rtp-circuit-breakers.xml">
 <!ENTITY I-D.ietf-ledbat-congestion PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ledbat-congestion.xml">
-<!ENTITY I-D.ietf-xrblock-rtcp-xr-qoe PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-xrblock-rtcp-xr-qoe.xml">
+<!ENTITY I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count.xml">
 <!ENTITY I-D.alvestrand-rmcat-congestion PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.alvestrand-rmcat-congestion.xml">
 <!ENTITY I-D.sarker-rmcat-eval-test PUBLIC ""
@@ -183,11 +184,11 @@ Resilience Schemes based on the network delay and observed packet loss">
     </section>
 
     <section title="Terminology" anchor="sec-terminology">
-      <!--<t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+      <t> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
       "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
       "OPTIONAL" in this document are to be interpreted as described
       in BCP 14, <xref target="RFC2119" /> and indicate requirement
-      levels for compliant implementations. </t> -->
+      levels for compliant implementations. </t>
 
       <t> The terminology defined in <xref target="RFC3550">RTP</xref>,
       <xref target="RFC3551">RTP Profile for Audio and Video Conferences
@@ -272,10 +273,16 @@ Resilience Schemes based on the network delay and observed packet loss">
           latency in recovering lost packets. <xref target="Holmer13" /> shows
           examples of using a single- and multi-frame FEC.
          </t>
+         <t>
+          The receiving endpoint may report the post-repair loss (or residual
+          loss) using either the report block defined in <xref target="RFC5725" />
+          (Run-length encoding of packets repaired) or in
+          <xref target="I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count" />
+          (packet count of repaired packets).
+         </t>
       </section>
 
-
-      <section title="Applicability to RMCAT" anchor="fec-cc-apply">
+      <section title="Applicability to other RMCAT Schemes" anchor="fec-cc-apply">
         <t>
           [Open issue:
           The current implementation is delay based and is documented in
@@ -307,7 +314,7 @@ Resilience Schemes based on the network delay and observed packet loss">
   </middle>
   <back>
     <references title="Normative References">
-      <!--&rfc2119;-->
+      &rfc2119;
       <!-- RTP related -->
       &rfc3550;
       &rfc3551;
@@ -315,15 +322,18 @@ Resilience Schemes based on the network delay and observed packet loss">
       &rfc4585;
       &rfc5506;
       <!--RMCAT related -->
-      &I-D.ietf-rmcat-cc-requirements;
       &I-D.ietf-avtcore-rtp-circuit-breakers;
+      <!-- FEC related -->
+      &rfc5109; <!-- RTP FEC payload -->
+      &rfc5725; <!-- RTP FEC payload -->
+      &I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count;
     </references>
 
     <references title="Informative References">
 
       &rfc4588; <!-- RTP Retx payload -->
-      &rfc5109; <!-- RTP FEC payload -->
       &rfc6363; <!--  Forward Error Correction (FEC) Framework -->
+      &I-D.ietf-rmcat-cc-requirements;
       &I-D.alvestrand-rmcat-congestion;
       &I-D.sarker-rmcat-eval-test;
 

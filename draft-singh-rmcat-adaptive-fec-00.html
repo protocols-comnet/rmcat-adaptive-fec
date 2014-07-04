@@ -379,7 +379,7 @@
 <link href="#rfc.section.3" rel="Chapter" title="3 Concept: FEC for Congestion Control"/>
 <link href="#rfc.section.3.1" rel="Chapter" title="3.1 State Machine"/>
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 FEC Scheme"/>
-<link href="#rfc.section.3.3" rel="Chapter" title="3.3 Applicability to RMCAT"/>
+<link href="#rfc.section.3.3" rel="Chapter" title="3.3 Applicability to other RMCAT Schemes"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Security Considerations"/>
 <link href="#rfc.section.5" rel="Chapter" title="5 IANA Considerations"/>
 <link href="#rfc.section.6" rel="Chapter" title="6 Acknowledgements"/>
@@ -469,7 +469,7 @@
 <li>3.   <a href="#rfc.section.3">Concept: FEC for Congestion Control</a></li>
 <li>3.1.   <a href="#rfc.section.3.1">State Machine</a></li>
 <li>3.2.   <a href="#rfc.section.3.2">FEC Scheme</a></li>
-<li>3.3.   <a href="#rfc.section.3.3">Applicability to RMCAT</a></li>
+<li>3.3.   <a href="#rfc.section.3.3">Applicability to other RMCAT Schemes</a></li>
 <li>4.   <a href="#rfc.section.4">Security Considerations</a></li>
 <li>5.   <a href="#rfc.section.5">IANA Considerations</a></li>
 <li>6.   <a href="#rfc.section.6">Acknowledgements</a></li>
@@ -506,7 +506,8 @@
 <p class="figure">Figure 1: Applicability of Error Resilience Schemes based on the network delay and observed packet loss</p>
 <p id="rfc.section.1.p.3">In this document, we describe the use of FEC packets not only for error-resilience but also as a probing mechanism for congestion control (ramping up the transmission rate).  </p>
 <h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#sec-terminology" id="sec-terminology">Terminology</a></h1>
-<p id="rfc.section.2.p.1">The terminology defined in <a href="#RFC3550">RTP</a> <cite title="NONE">[RFC3550]</cite>, <a href="#RFC3551">RTP Profile for Audio and Video Conferences with Minimal Control</a> <cite title="NONE">[RFC3551]</cite>, <a href="#RFC3611">RTCP Extended Report (XR)</a> <cite title="NONE">[RFC3611]</cite>, <a href="#RFC4585">Extended RTP Profile for RTCP-based Feedback (RTP/AVPF)</a> <cite title="NONE">[RFC4585]</cite>, <a href="#RFC4588">RTP Retransmission Payload Format</a> <cite title="NONE">[RFC4588]</cite>, <a href="#RFC6363">Forward Error Correction (FEC) Framework</a> <cite title="NONE">[RFC6363]</cite>, and <a href="#RFC5506">Support for Reduced-Size RTCP</a> <cite title="NONE">[RFC5506]</cite> apply.</p>
+<p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14, <a href="#RFC2119">[RFC2119]</a> and indicate requirement levels for compliant implementations. </p>
+<p id="rfc.section.2.p.2">The terminology defined in <a href="#RFC3550">RTP</a> <cite title="NONE">[RFC3550]</cite>, <a href="#RFC3551">RTP Profile for Audio and Video Conferences with Minimal Control</a> <cite title="NONE">[RFC3551]</cite>, <a href="#RFC3611">RTCP Extended Report (XR)</a> <cite title="NONE">[RFC3611]</cite>, <a href="#RFC4585">Extended RTP Profile for RTCP-based Feedback (RTP/AVPF)</a> <cite title="NONE">[RFC4585]</cite>, <a href="#RFC4588">RTP Retransmission Payload Format</a> <cite title="NONE">[RFC4588]</cite>, <a href="#RFC6363">Forward Error Correction (FEC) Framework</a> <cite title="NONE">[RFC6363]</cite>, and <a href="#RFC5506">Support for Reduced-Size RTCP</a> <cite title="NONE">[RFC5506]</cite> apply.</p>
 <h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#fec-cc-concept" id="fec-cc-concept">Concept: FEC for Congestion Control</a></h1>
 <p id="rfc.section.3.p.1">FEC is one method for providing error-resilience, it improves reliability by adding redundant data to the primary media flow, which is used by received to recover packets that have been lost due to congestion or bit-errors. The congestion control algorithm on the other hand aims at maximizing the network path utilization, but risks over-estimating the avaiable end-to-end network capacity leading to congestion (and therefore losses).  </p>
 <p id="rfc.section.3.p.2">The main idea behind using FEC for congestion control is as follows: the sending endpoint chooses a high FEC rate to aggressively probe for available capacity and conversely chooses a low FEC rate to conservatively probe for available capacity. During the ramp up, if a packet is lost and the FEC packet arrives in time for decoding, the receiver is be able to recover the lost packet; if no packet is lost, the sender is able to increase the media encoding rate by swapping out a part of the FEC rate.  This method can be especially useful when the sending rate is close to the bottleneck link rate: by choosing an appropriate FEC rate, the endpoint is able to probe for available capacity without changing the target media rate and therefore not affecting the user-experience.  Therefore, the congestion control algorithm is always able to probe for available capacity, as improved reliability compensates for possible errors resulting from overuse (i.e., increase in observed latency and/or losses).  </p>
@@ -534,7 +535,8 @@
 <h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#fec-scheme" id="fec-scheme">FEC Scheme</a></h1>
 <p><a href="#RFC6363">[RFC6363]</a> describes a framework for using Forward Error Correction (FEC) codes with RTP and allows any FEC code to be used with the framework. For this proposal, the FEC packets are created by XORing RTP media packets, the resulting redundant RTP packets are encoded using the scheme defined in <a href="#RFC5109">[RFC5109]</a>.  </p>
 <p id="rfc.section.3.2.p.2">The endpoint  MAY use a single-frame FEC or a multi-frame FEC for protecting the media stream. A single-frame FEC protects against a single packet loss and fails when burst loss occurs. Using multi-frame FEC helps mitigate these issues at the cost of higher overhead and latency in recovering lost packets. <a href="#Holmer13">[Holmer13]</a> shows examples of using a single- and multi-frame FEC.  </p>
-<h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to RMCAT</a></h1>
+<p id="rfc.section.3.2.p.3">The receiving endpoint may report the post-repair loss (or residual loss) using either the report block defined in <a href="#RFC5725">[RFC5725]</a> (Run-length encoding of packets repaired) or in <a href="#I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count">[I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count]</a> (packet count of repaired packets).  </p>
+<h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to other RMCAT Schemes</a></h1>
 <p id="rfc.section.3.3.p.1">[Open issue: The current implementation is delay based and is documented in <a href="#Nagy14">[Nagy14]</a>. However, we would like to generalize the concept and apply it to different RMCAT algorithms for e.g., <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite>, etc.] </p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> Security Considerations</h1>
 <p id="rfc.section.4.p.1">TBD</p>
@@ -546,6 +548,12 @@
 <h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
 <table>
   <tbody>
+    <tr>
+      <td class="reference">
+        <b id="RFC2119">[RFC2119]</b>
+      </td>
+      <td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, March 1997.</td>
+    </tr>
     <tr>
       <td class="reference">
         <b id="RFC3550">[RFC3550]</b>
@@ -578,15 +586,27 @@
     </tr>
     <tr>
       <td class="reference">
-        <b id="I-D.ietf-rmcat-cc-requirements">[I-D.ietf-rmcat-cc-requirements]</b>
-      </td>
-      <td class="top"><a>Jesup, R.</a>, "<a href="http://tools.ietf.org/html/draft-ietf-rmcat-cc-requirements-02">Congestion Control Requirements For RMCAT</a>", Internet-Draft draft-ietf-rmcat-cc-requirements-02, February 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="I-D.ietf-avtcore-rtp-circuit-breakers">[I-D.ietf-avtcore-rtp-circuit-breakers]</b>
       </td>
       <td class="top"><a>Perkins, C.</a> and <a>V. Singh</a>, "<a href="http://tools.ietf.org/html/draft-ietf-avtcore-rtp-circuit-breakers-05">Multimedia Congestion Control: Circuit Breakers for Unicast RTP Sessions</a>", Internet-Draft draft-ietf-avtcore-rtp-circuit-breakers-05, February 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5109">[RFC5109]</b>
+      </td>
+      <td class="top"><a>Li, A.</a>, "<a href="http://tools.ietf.org/html/rfc5109">RTP Payload Format for Generic Forward Error Correction</a>", RFC 5109, December 2007.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5725">[RFC5725]</b>
+      </td>
+      <td class="top"><a>Begen, A.</a>, <a>Hsu, D.</a> and <a>M. Lague</a>, "<a href="http://tools.ietf.org/html/rfc5725">Post-Repair Loss RLE Report Block Type for RTP Control Protocol (RTCP) Extended Reports (XRs)</a>", RFC 5725, February 2010.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count">[I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count]</b>
+      </td>
+      <td class="top"><a>Huang, R.</a> and <a>V. Singh</a>, "<a href="http://tools.ietf.org/html/draft-ietf-xrblock-rtcp-xr-post-repair-loss-count-05">RTP Control Protocol (RTCP) Extended Report (XR) for Post-Repair Loss Count Metrics</a>", Internet-Draft draft-ietf-xrblock-rtcp-xr-post-repair-loss-count-05, June 2014.</td>
     </tr>
   </tbody>
 </table>
@@ -601,15 +621,15 @@
     </tr>
     <tr>
       <td class="reference">
-        <b id="RFC5109">[RFC5109]</b>
-      </td>
-      <td class="top"><a>Li, A.</a>, "<a href="http://tools.ietf.org/html/rfc5109">RTP Payload Format for Generic Forward Error Correction</a>", RFC 5109, December 2007.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="RFC6363">[RFC6363]</b>
       </td>
       <td class="top"><a>Watson, M.</a>, <a>Begen, A.</a> and <a>V. Roca</a>, "<a href="http://tools.ietf.org/html/rfc6363">Forward Error Correction (FEC) Framework</a>", RFC 6363, October 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.ietf-rmcat-cc-requirements">[I-D.ietf-rmcat-cc-requirements]</b>
+      </td>
+      <td class="top"><a>Jesup, R.</a>, "<a href="http://tools.ietf.org/html/draft-ietf-rmcat-cc-requirements-02">Congestion Control Requirements For RMCAT</a>", Internet-Draft draft-ietf-rmcat-cc-requirements-02, February 2014.</td>
     </tr>
     <tr>
       <td class="reference">
