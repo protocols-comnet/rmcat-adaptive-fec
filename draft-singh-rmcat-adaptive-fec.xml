@@ -277,8 +277,12 @@ Resilience Schemes based on the network delay and observed packet loss">
 
       <section title="Applicability to RMCAT" anchor="fec-cc-apply">
         <t>
-          [Open issue: Apply to <xref target="I-D.alvestrand-rmcat-congestion">Google's
-          Congestion Control algorithm</xref> and/or other proposals (e.g., NADA).]
+          [Open issue:
+          The current implementation is delay based and is documented in
+          <xref target="Nagy14" />. However, we would like to generalize
+          the concept and apply it to different RMCAT algorithms for e.g.,
+          <xref target="I-D.alvestrand-rmcat-congestion">Google's
+          Congestion Control algorithm</xref>, etc.]
         </t>
       </section>
 

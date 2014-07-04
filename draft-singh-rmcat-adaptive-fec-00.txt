@@ -238,9 +238,10 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
 3.3.  Applicability to RMCAT
 
-   [Open issue: Apply to Google's Congestion Control algorithm
-   [I-D.alvestrand-rmcat-congestion] and/or other proposals (e.g.,
-   NADA).]
+   [Open issue: The current implementation is delay based and is
+   documented in [Nagy14].  However, we would like to generalize the
+   concept and apply it to different RMCAT algorithms for e.g., Google's
+   Congestion Control algorithm [I-D.alvestrand-rmcat-congestion], etc.]
 
 4.  Security Considerations
 
@@ -270,7 +271,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    [RFC3611]  Friedman, T., Caceres, R., and A. Clark, "RTP Control
               Protocol Extended Reports (RTCP XR)", RFC 3611, November
               2003.
-
 
 
 

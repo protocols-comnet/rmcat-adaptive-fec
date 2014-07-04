@@ -535,7 +535,7 @@
 <p><a href="#RFC6363">[RFC6363]</a> describes a framework for using Forward Error Correction (FEC) codes with RTP and allows any FEC code to be used with the framework. For this proposal, the FEC packets are created by XORing RTP media packets, the resulting redundant RTP packets are encoded using the scheme defined in <a href="#RFC5109">[RFC5109]</a>.  </p>
 <p id="rfc.section.3.2.p.2">The endpoint  MAY use a single-frame FEC or a multi-frame FEC for protecting the media stream. A single-frame FEC protects against a single packet loss and fails when burst loss occurs. Using multi-frame FEC helps mitigate these issues at the cost of higher overhead and latency in recovering lost packets. <a href="#Holmer13">[Holmer13]</a> shows examples of using a single- and multi-frame FEC.  </p>
 <h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to RMCAT</a></h1>
-<p id="rfc.section.3.3.p.1">[Open issue: Apply to <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite> and/or other proposals (e.g., NADA).] </p>
+<p id="rfc.section.3.3.p.1">[Open issue: The current implementation is delay based and is documented in <a href="#Nagy14">[Nagy14]</a>. However, we would like to generalize the concept and apply it to different RMCAT algorithms for e.g., <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite>, etc.] </p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> Security Considerations</h1>
 <p id="rfc.section.4.p.1">TBD</p>
 <h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> IANA Considerations</h1>
