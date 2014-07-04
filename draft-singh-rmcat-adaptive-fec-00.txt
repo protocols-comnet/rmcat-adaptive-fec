@@ -73,16 +73,15 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
    3.  Concept: FEC for Congestion Control . . . . . . . . . . . . .   3
-   4.  Design Features . . . . . . . . . . . . . . . . . . . . . . .   4
-     4.1.  FEC Scheme  . . . . . . . . . . . . . . . . . . . . . . .   4
-     4.2.  FEC and RTP . . . . . . . . . . . . . . . . . . . . . . .   4
-     4.3.  Applicability to RMCAT  . . . . . . . . . . . . . . . . .   5
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
-   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
-   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
-     8.2.  Informative References  . . . . . . . . . . . . . . . . .   6
+     3.1.  State Machine . . . . . . . . . . . . . . . . . . . . . .   4
+     3.2.  FEC Scheme  . . . . . . . . . . . . . . . . . . . . . . .   4
+     3.3.  Applicability to RMCAT  . . . . . . . . . . . . . . . . .   5
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   6
    Appendix A.  Simulations  . . . . . . . . . . . . . . . . . . . .   7
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
 
@@ -106,6 +105,7 @@ Table of Contents
    codec-dependent resilience methods (for e.g., full intra-refresh and
    error-concealment).  In this way, the multimedia system is anyway
    trading off part of the sending rate for redundancy or
+   retransmissions to reduce the effects of packet loss.  An endpoint
 
 
 
@@ -114,7 +114,6 @@ Singh, et al.            Expires January 5, 2015                [Page 2]
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
-   retransmissions to reduce the effects of packet loss.  An endpoint
    often prefers using FEC in high latency networks where
    retransmissions may arrive later than the playout time of the packet
    (due to the size of the dejitter buffer) [Holmer13].  Therefore, the
@@ -124,19 +123,20 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    applicatbility of different error-resilience schemes based on the
    end-to-end latency and the observed packet loss [Devadoss08].
 
-                        ^             __________
-                        |            |          |
-                        |            |    UEP   |
-                      l |____________|____      |
-                      a |            |    |     |
-                      t |       RPS  |    |     |
-                      e |_______     |    |     |
-                      n |       |    |    |     |
-                      c |       |    |____|_____|
-                      y | NACK  |         |
-                        |       |         |
-                        +---------------------------->
-                               Packet loss
+                      ^
+                      |            .__________.
+                      |            |          |
+                      |            |  UEP/FEC |
+                    l |____________|____.     |
+                    a |            |    |     |
+                    t |       RPS  |    |     |
+                    e |_______.    |    |     |
+                    n |       |    |    |     |
+                    c |       |    |____|_____|
+                    y | NACK  |         |
+                      |       |         |
+                      +------------------------------->
+                             Packet loss
 
      Figure 1: Applicability of Error Resilience Schemes based on the
                   network delay and observed packet loss
@@ -150,8 +150,9 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    The terminology defined in RTP [RFC3550], RTP Profile for Audio and
    Video Conferences with Minimal Control [RFC3551], RTCP Extended
    Report (XR) [RFC3611], Extended RTP Profile for RTCP-based Feedback
-   (RTP/AVPF) [RFC4585] and Support for Reduced-Size RTCP [RFC5506]
-   apply.
+   (RTP/AVPF) [RFC4585], RTP Retransmission Payload Format [RFC4588],
+   Forward Error Correction (FEC) Framework [RFC6363], and Support for
+   Reduced-Size RTCP [RFC5506] apply.
 
 3.  Concept: FEC for Congestion Control
 
@@ -160,8 +161,7 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    is used by received to recover packets that have been lost due to
    congestion or bit-errors.  The congestion control algorithm on the
    other hand aims at maximizing the network path utilization, but risks
-   over-estimating the avaiable end-to-end network capacity leading to
-   congestion (and therefore losses).
+
 
 
 
@@ -169,6 +169,9 @@ Singh, et al.            Expires January 5, 2015                [Page 3]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
+
+   over-estimating the avaiable end-to-end network capacity leading to
+   congestion (and therefore losses).
 
    The main idea behind using FEC for congestion control is as follows:
    the sending endpoint chooses a high FEC rate to aggressively probe
@@ -187,37 +190,34 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    resulting from overuse (i.e., increase in observed latency and/or
    losses).
 
-       +-----------+          Good conditions            +-----------+
-       |           |------------------------------------>|           |
-       |   STAY    |                                     |   PROBE   |
-       |           |<------------------------------------|           |
-       +-----------+     Probed, but Loss recovered      +-----------+
-            |                                               |  |  |
-            |   ____________________________________________|  |  |
-            |  |                                               |  |
-            |  |                                               |  |
-       +-----------+                                     +-----------+
-       |           |          Unstable conditions        |           |
-       |  Reduce   |<------------------------------------|     UP    |
-       |           |                                     |           |
-       +-----------+                                     +-----------+
+      +------------+          Good conditions            +-----------+
+      |            |------------------------------------>|           |
+      |    STAY    |                                     |   PROBE   |
+      |            |<------------------------------------|           |
+      +------------+     Probed, but Loss recovered      +-----------+
+           |                                               |  |  |
+           |   ____________________________________________|  |  |
+           |  |                                               |  |
+           |  |                                               |  |
+      +------------+                                     +------------+
+      |            |          Unstable conditions        |            |
+      |   REDUCE   |<------------------------------------|  INCREASE  |
+      |            |                                     |            |
+      +------------+                                     +------------+
 
        Figure 2: State machine of a Congestion Control enabling FEC.
 
-4.  Design Features
+3.1.  State Machine
 
-4.1.  FEC Scheme
+   Figure 2 illustrates the the state machine of a congestion control
+   algorithm incorporating FEC for probing.  The state-machine includes
+   4 states: STAY, PROBE, INCREASE, REDUCE.
 
-   Block and Parity FEC
+3.2.  FEC Scheme
 
-4.2.  FEC and RTP
-
-   RFC4588, RFC5109, RFC6363
-
-
-
-
-
+   [RFC6363] describes a framework for using Forward Error Correction
+   (FEC) codes with RTP and allows any FEC code to be used with the
+   framework.  For this proposal, the FEC packets are created by XORing
 
 
 
@@ -226,28 +226,38 @@ Singh, et al.            Expires January 5, 2015                [Page 4]
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
-4.3.  Applicability to RMCAT
+   RTP media packets, the resulting redundant RTP packets are encoded
+   using the scheme defined in [RFC5109].
+
+   The endpoint MAY use a single-frame FEC or a multi-frame FEC for
+   protecting the media stream.  A single-frame FEC protects against a
+   single packet loss and fails when burst loss occurs.  Using multi-
+   frame FEC helps mitigate these issues at the cost of higher overhead
+   and latency in recovering lost packets.  [Holmer13] shows examples of
+   using a single- and multi-frame FEC.
+
+3.3.  Applicability to RMCAT
 
    [Open issue: Apply to Google's Congestion Control algorithm
    [I-D.alvestrand-rmcat-congestion] and/or other proposals (e.g.,
    NADA).]
 
-5.  Security Considerations
+4.  Security Considerations
 
    TBD
 
-6.  IANA Considerations
+5.  IANA Considerations
 
    There are no IANA impacts in this memo.
 
-7.  Acknowledgements
+6.  Acknowledgements
 
    This document is based on the results published in [Nagy14], it has
    benefited from several rounds of peer-review and hallway discussions.
 
-8.  References
+7.  References
 
-8.1.  Normative References
+7.1.  Normative References
 
    [RFC3550]  Schulzrinne, H., Casner, S., Frederick, R., and V.
               Jacobson, "RTP: A Transport Protocol for Real-Time
@@ -260,6 +270,17 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    [RFC3611]  Friedman, T., Caceres, R., and A. Clark, "RTP Control
               Protocol Extended Reports (RTCP XR)", RFC 3611, November
               2003.
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 5]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
 
    [RFC4585]  Ott, J., Wenger, S., Sato, N., Burmeister, C., and J. Rey,
               "Extended RTP Profile for Real-time Transport Control
@@ -275,20 +296,13 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               draft-ietf-rmcat-cc-requirements-02 (work in progress),
               February 2014.
 
-
-
-Singh, et al.            Expires January 5, 2015                [Page 5]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    [I-D.ietf-avtcore-rtp-circuit-breakers]
               Perkins, C. and V. Singh, "Multimedia Congestion Control:
               Circuit Breakers for Unicast RTP Sessions", draft-ietf-
               avtcore-rtp-circuit-breakers-05 (work in progress),
               February 2014.
 
-8.2.  Informative References
+7.2.  Informative References
 
    [RFC4588]  Rey, J., Leon, D., Miyazaki, A., Varsa, V., and R.
               Hakenberg, "RTP Retransmission Payload Format", RFC 4588,
@@ -316,6 +330,14 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Communication", Proc. of 5th ACM Internation Conference on
               Multimedia Systems (MMSys 2014) , 3 2014.
 
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 6]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
    [Devadoss08]
               Devadoss, J., Singh, V., Ott, J., Liu, C., Wang, Y-K., and
               I. Curcio, "Evaluation of Error Resilience Mechanisms for
@@ -326,17 +348,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Holmer, S., Shemer, M., and M. Paniconi, "Handling Packet
               Loss in WebRTC", Proc. of IEEE International Conference on
               Image Processing (ICIP 2013) , 9 2013.
-
-
-
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 6]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
 
 Appendix A.  Simulations
 
@@ -368,17 +379,6 @@ Authors' Addresses
    Email: marcin.nagy@aalto.fi
 
 
-   Joerg Ott
-   Aalto University
-   School of Electrical Engineering
-   Otakaari 5 A
-   Espoo, FIN  02150
-   Finland
-
-   Email: jo@comnet.tkk.fi
-
-
-
 
 
 
@@ -394,6 +394,16 @@ Singh, et al.            Expires January 5, 2015                [Page 7]
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
+   Joerg Ott
+   Aalto University
+   School of Electrical Engineering
+   Otakaari 5 A
+   Espoo, FIN  02150
+   Finland
+
+   Email: jo@comnet.tkk.fi
+
+
    Lars Eggert
    NetApp
    Sonnenallee 1
@@ -403,16 +413,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    Phone: +49 151 12055791
    Email: lars@netapp.com
    URI:   http://eggert.org/
-
-
-
-
-
-
-
-
-
-
 
 
 

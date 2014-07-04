@@ -157,18 +157,19 @@
 <figure align="center" anchor="fig-apply-er" title="Applicability of Error
 Resilience Schemes based on the network delay and observed packet loss">
 <artwork align="center"><![CDATA[
-   ^             __________
+   ^
+   |            .__________.
    |            |          |
-   |            |    UEP   |
- l |____________|____      |
+   |            |  UEP/FEC |
+ l |____________|____.     |
  a |            |    |     |
  t |       RPS  |    |     |
- e |_______     |    |     |
+ e |_______.    |    |     |
  n |       |    |    |     |
  c |       |    |____|_____|
  y | NACK  |         |
    |       |         |
-   +---------------------------->
+   +------------------------------->
           Packet loss
 ]]></artwork>
 </figure>
@@ -192,7 +193,9 @@ Resilience Schemes based on the network delay and observed packet loss">
       <xref target="RFC3551">RTP Profile for Audio and Video Conferences
         with Minimal Control</xref>, <xref target="RFC3611">RTCP Extended
         Report (XR)</xref>, <xref target="RFC4585">Extended RTP Profile
-        for RTCP-based Feedback (RTP/AVPF)</xref> and <xref
+        for RTCP-based Feedback (RTP/AVPF)</xref>, <xref target="RFC4588">
+        RTP Retransmission Payload Format</xref>, <xref target="RFC6363">
+        Forward Error Correction (FEC) Framework</xref>, and <xref
         target="RFC5506">Support for Reduced-Size RTCP</xref> apply.</t>
     </section>
 
@@ -228,35 +231,49 @@ Resilience Schemes based on the network delay and observed packet loss">
 <figure align="center" anchor="fig-fec-sm" title="State machine of a
   Congestion Control enabling FEC.">
 <artwork align="center"><![CDATA[
-   +-----------+          Good conditions            +-----------+
-   |           |------------------------------------>|           |
-   |   STAY    |                                     |   PROBE   |
-   |           |<------------------------------------|           |
-   +-----------+     Probed, but Loss recovered      +-----------+
+   +------------+          Good conditions            +-----------+
+   |            |------------------------------------>|           |
+   |    STAY    |                                     |   PROBE   |
+   |            |<------------------------------------|           |
+   +------------+     Probed, but Loss recovered      +-----------+
         |                                               |  |  |
         |   ____________________________________________|  |  |
         |  |                                               |  |
         |  |                                               |  |
-   +-----------+                                     +-----------+
-   |           |          Unstable conditions        |           |
-   |  Reduce   |<------------------------------------|     UP    |
-   |           |                                     |           |
-   +-----------+                                     +-----------+
+   +------------+                                     +------------+
+   |            |          Unstable conditions        |            |
+   |   REDUCE   |<------------------------------------|  INCREASE  |
+   |            |                                     |            |
+   +------------+                                     +------------+
 ]]></artwork>
 </figure>
+      <section title="State Machine" anchor="fec-sm">
+        <t>
+          <xref target="fig-fec-sm" /> illustrates the the state machine of
+          a congestion control algorithm incorporating FEC for probing. The
+          state-machine includes 4 states: STAY, PROBE, INCREASE, REDUCE.
+        </t>
+      </section>
 
-    </section>
-
-    <section title="Design Features" anchor="cc-proposal">
-
-      <t></t>
       <section title="FEC Scheme" anchor="fec-scheme">
-        <t>Block and Parity FEC</t>
+        <!--  <t>Block and Parity FEC</t> -->
+        <t>
+          <xref target="RFC6363" /> describes a framework for using Forward Error
+          Correction (FEC) codes with RTP and allows any FEC code to be used with
+          the framework. For this proposal, the FEC packets are created by
+          XORing RTP media packets, the resulting redundant RTP packets are
+          encoded using the scheme defined in <xref target="RFC5109" />.
+        </t>
+        <t>
+          The endpoint  MAY use a single-frame FEC or a multi-frame FEC for
+          protecting the media stream. A single-frame FEC protects against a
+          single packet loss and fails when burst loss occurs. Using multi-frame
+          FEC helps mitigate these issues at the cost of higher overhead and
+          latency in recovering lost packets. <xref target="Holmer13" /> shows
+          examples of using a single- and multi-frame FEC.
+         </t>
       </section>
 
-      <section title="FEC and RTP" anchor="fec-rtp">
-        <t>RFC4588, RFC5109, RFC6363</t>
-      </section>
 
       <section title="Applicability to RMCAT" anchor="fec-cc-apply">
         <t>
