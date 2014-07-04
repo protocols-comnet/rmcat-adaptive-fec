@@ -18,7 +18,12 @@
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ledbat-congestion.xml">
 <!ENTITY I-D.ietf-xrblock-rtcp-xr-qoe PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-xrblock-rtcp-xr-qoe.xml">
+<!ENTITY I-D.alvestrand-rmcat-congestion PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.alvestrand-rmcat-congestion.xml">
+<!ENTITY I-D.sarker-rmcat-eval-test PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.sarker-rmcat-eval-test.xml">
 ]>
+
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
@@ -193,7 +198,52 @@ Resilience Schemes based on the network delay and observed packet loss">
 
     <section title="Concept: FEC for Congestion Control" anchor="fec-cc-concept">
 
-      <t></t>
+      <t>
+        FEC is one method for providing error-resilience, it improves
+        reliability by adding redundant data to the primary media flow,
+        which is used by received to recover packets that have been lost
+        due to congestion or bit-errors. The congestion control algorithm
+        on the other hand aims at maximizing the network path utilization,
+        but risks over-estimating the avaiable end-to-end network capacity
+        leading to congestion (and therefore losses).
+      </t>
+      <t>
+        The main idea behind using FEC for congestion control is as follows:
+        the sending endpoint chooses a high FEC rate to aggressively probe for
+        available capacity and conversely chooses a low FEC rate to conservatively
+        probe for available capacity. During the ramp up, if a packet is lost and
+        the FEC packet arrives in time for decoding, the receiver is be able to
+        recover the lost packet; if no packet is lost, the sender is able to
+        increase the media encoding rate by swapping out a part of the FEC rate.
+        This method can be especially useful when the sending rate is close to
+        the bottleneck link rate: by choosing an appropriate FEC rate, the
+        endpoint is able to probe for available capacity without changing the
+        target media rate and therefore not affecting the user-experience.
+
+        Therefore, the congestion control algorithm is always able to probe for
+        available capacity, as improved reliability compensates for possible errors
+        resulting from overuse (i.e., increase in observed latency and/or losses).
+      </t>
+
+<figure align="center" anchor="fig-fec-sm" title="State machine of a
+  Congestion Control enabling FEC.">
+<artwork align="center"><![CDATA[
+   +-----------+          Good conditions            +-----------+
+   |           |------------------------------------>|           |
+   |   STAY    |                                     |   PROBE   |
+   |           |<------------------------------------|           |
+   +-----------+     Probed, but Loss recovered      +-----------+
+        |                                               |  |  |
+        |   ____________________________________________|  |  |
+        |  |                                               |  |
+        |  |                                               |  |
+   +-----------+                                     +-----------+
+   |           |          Unstable conditions        |           |
+   |  Reduce   |<------------------------------------|     UP    |
+   |           |                                     |           |
+   +-----------+                                     +-----------+
+]]></artwork>
+</figure>
 
     </section>
 
@@ -208,18 +258,18 @@ Resilience Schemes based on the network delay and observed packet loss">
         <t>RFC4588, RFC5109, RFC6363</t>
       </section>
 
-
-    </section>
-
-
-    <section title="Applicability to RMCAT" anchor="fec-cc-apply">
-
-      <t></t>
+      <section title="Applicability to RMCAT" anchor="fec-cc-apply">
+        <t>
+          [Open issue: Apply to <xref target="I-D.alvestrand-rmcat-congestion">Google's
+          Congestion Control algorithm</xref> and/or other proposals (e.g., NADA).]
+        </t>
+      </section>
 
     </section>
 
     <section title="Security Considerations">
-      <t>Security issues have not been discussed in this memo.</t>
+      <t>TBD</t>
+      <!-- <t>Security issues have not been discussed in this memo.</t> -->
       <!-- Congestion Collapse, Denial of Service -->
     </section>
 
@@ -229,7 +279,9 @@ Resilience Schemes based on the network delay and observed packet loss">
 
 
     <section title="Acknowledgements">
-      <t></t>
+      <t>This document is based on the results published in <xref target="Nagy14" />,
+        it has benefited from several rounds of peer-review and hallway discussions.
+      </t>
     </section>
   </middle>
   <back>
@@ -251,6 +303,8 @@ Resilience Schemes based on the network delay and observed packet loss">
       &rfc4588; <!-- RTP Retx payload -->
       &rfc5109; <!-- RTP FEC payload -->
       &rfc6363; <!--  Forward Error Correction (FEC) Framework -->
+      &I-D.alvestrand-rmcat-congestion;
+      &I-D.sarker-rmcat-eval-test;
 
       <reference anchor="Nagy14">
         <front>
@@ -294,14 +348,23 @@ Resilience Schemes based on the network delay and observed packet loss">
       </reference>
     </references>
 
-    <section anchor="App-cl" title="Change Log">
+    <section anchor="sim-res" title="Simulations">
+      <t>
+        This document is based on the results published in <xref target="Nagy14" />.
+        See the paper for ns-2 and testbed results; more results based on the
+        scenarios listed in <xref target="I-D.sarker-rmcat-eval-test" />
+        will be published shorty.
+      </t>
+    </section>
+
+    <!-- <section anchor="App-cl" title="Change Log">
       <t>Note to the RFC-Editor: please remove this section prior to
         publication as an RFC.</t>
-      <section title="Changes in draft-singh-rmcat-adaptive-fec-00">
+      <section title="Changes in draft-singh-rmcat-adaptive-fec-01">
         <t><list style="symbols">
-          <t>Updated references.</t>
+          <t></t>
         </list></t>
       </section>
-    </section>
+    </section> -->
   </back>
 </rfc>

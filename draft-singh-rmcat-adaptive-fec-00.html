@@ -380,15 +380,14 @@
 <link href="#rfc.section.4" rel="Chapter" title="4 Design Features"/>
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 FEC Scheme"/>
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 FEC and RTP"/>
-<link href="#rfc.section.5" rel="Chapter" title="5 Applicability to RMCAT"/>
-<link href="#rfc.section.6" rel="Chapter" title="6 Security Considerations"/>
-<link href="#rfc.section.7" rel="Chapter" title="7 IANA Considerations"/>
-<link href="#rfc.section.8" rel="Chapter" title="8 Acknowledgements"/>
-<link href="#rfc.references" rel="Chapter" title="9 References"/>
-<link href="#rfc.references.1" rel="Chapter" title="9.1 Normative References"/>
-<link href="#rfc.references.2" rel="Chapter" title="9.2 Informative References"/>
-<link href="#rfc.appendix.A" rel="Chapter" title="A Change Log"/>
-<link href="#rfc.appendix.A.1" rel="Chapter" title="A.1 Changes in draft-singh-rmcat-adaptive-fec-00"/>
+<link href="#rfc.section.4.3" rel="Chapter" title="4.3 Applicability to RMCAT"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 IANA Considerations"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Acknowledgements"/>
+<link href="#rfc.references" rel="Chapter" title="8 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="8.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="8.2 Informative References"/>
+<link href="#rfc.appendix.A" rel="Chapter" title="A Simulations"/>
 <link href="#rfc.authors" rel="Chapter"/>
 
 
@@ -472,15 +471,14 @@
 <li>4.   <a href="#rfc.section.4">Design Features</a></li>
 <li>4.1.   <a href="#rfc.section.4.1">FEC Scheme</a></li>
 <li>4.2.   <a href="#rfc.section.4.2">FEC and RTP</a></li>
-<li>5.   <a href="#rfc.section.5">Applicability to RMCAT</a></li>
-<li>6.   <a href="#rfc.section.6">Security Considerations</a></li>
-<li>7.   <a href="#rfc.section.7">IANA Considerations</a></li>
-<li>8.   <a href="#rfc.section.8">Acknowledgements</a></li>
-<li>9.   <a href="#rfc.references">References</a></li>
-<li>9.1.   <a href="#rfc.references.1">Normative References</a></li>
-<li>9.2.   <a href="#rfc.references.2">Informative References</a></li>
-<li>Appendix A.   <a href="#rfc.appendix.A">Change Log</a></li>
-<li>A.1.   <a href="#rfc.appendix.A.1">Changes in draft-singh-rmcat-adaptive-fec-00</a></li>
+<li>4.3.   <a href="#rfc.section.4.3">Applicability to RMCAT</a></li>
+<li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
+<li>6.   <a href="#rfc.section.6">IANA Considerations</a></li>
+<li>7.   <a href="#rfc.section.7">Acknowledgements</a></li>
+<li>8.   <a href="#rfc.references">References</a></li>
+<li>8.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>8.2.   <a href="#rfc.references.2">Informative References</a></li>
+<li>Appendix A.   <a href="#rfc.appendix.A">Simulations</a></li>
 <li><a href="#rfc.authors">Authors' Addresses</a></li>
 
 
@@ -511,23 +509,43 @@
 <h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> <a href="#sec-terminology" id="sec-terminology">Terminology</a></h1>
 <p id="rfc.section.2.p.1">The terminology defined in <a href="#RFC3550">RTP</a> <cite title="NONE">[RFC3550]</cite>, <a href="#RFC3551">RTP Profile for Audio and Video Conferences with Minimal Control</a> <cite title="NONE">[RFC3551]</cite>, <a href="#RFC3611">RTCP Extended Report (XR)</a> <cite title="NONE">[RFC3611]</cite>, <a href="#RFC4585">Extended RTP Profile for RTCP-based Feedback (RTP/AVPF)</a> <cite title="NONE">[RFC4585]</cite> and <a href="#RFC5506">Support for Reduced-Size RTCP</a> <cite title="NONE">[RFC5506]</cite> apply.</p>
 <h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> <a href="#fec-cc-concept" id="fec-cc-concept">Concept: FEC for Congestion Control</a></h1>
-<p/>
+<p id="rfc.section.3.p.1">FEC is one method for providing error-resilience, it improves reliability by adding redundant data to the primary media flow, which is used by received to recover packets that have been lost due to congestion or bit-errors. The congestion control algorithm on the other hand aims at maximizing the network path utilization, but risks over-estimating the avaiable end-to-end network capacity leading to congestion (and therefore losses).  </p>
+<p id="rfc.section.3.p.2">The main idea behind using FEC for congestion control is as follows: the sending endpoint chooses a high FEC rate to aggressively probe for available capacity and conversely chooses a low FEC rate to conservatively probe for available capacity. During the ramp up, if a packet is lost and the FEC packet arrives in time for decoding, the receiver is be able to recover the lost packet; if no packet is lost, the sender is able to increase the media encoding rate by swapping out a part of the FEC rate.  This method can be especially useful when the sending rate is close to the bottleneck link rate: by choosing an appropriate FEC rate, the endpoint is able to probe for available capacity without changing the target media rate and therefore not affecting the user-experience.  Therefore, the congestion control algorithm is always able to probe for available capacity, as improved reliability compensates for possible errors resulting from overuse (i.e., increase in observed latency and/or losses).  </p>
+<div id="rfc.figure.2"/>
+<div id="fig-fec-sm"/>
+<pre>
+   +-----------+          Good conditions            +-----------+
+   |           |------------------------------------&gt;|           |
+   |   STAY    |                                     |   PROBE   |
+   |           |&lt;------------------------------------|           |
+   +-----------+     Probed, but Loss recovered      +-----------+
+        |                                               |  |  |
+        |   ____________________________________________|  |  |
+        |  |                                               |  |
+        |  |                                               |  |
+   +-----------+                                     +-----------+
+   |           |          Unstable conditions        |           |
+   |  Reduce   |&lt;------------------------------------|     UP    |
+   |           |                                     |           |
+   +-----------+                                     +-----------+
+</pre>
+<p class="figure">Figure 2: State machine of a    Congestion Control enabling FEC.</p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> <a href="#cc-proposal" id="cc-proposal">Design Features</a></h1>
 <p/>
 <h1 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1.</a> <a href="#fec-scheme" id="fec-scheme">FEC Scheme</a></h1>
 <p id="rfc.section.4.1.p.1">Block and Parity FEC</p>
 <h1 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2.</a> <a href="#fec-rtp" id="fec-rtp">FEC and RTP</a></h1>
 <p id="rfc.section.4.2.p.1">RFC4588, RFC5109, RFC6363</p>
-<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to RMCAT</a></h1>
-<p/>
-<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> Security Considerations</h1>
-<p id="rfc.section.6.p.1">Security issues have not been discussed in this memo.</p>
-<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> IANA Considerations</h1>
-<p id="rfc.section.7.p.1">There are no IANA impacts in this memo.</p>
-<h1 id="rfc.section.8"><a href="#rfc.section.8">8.</a> Acknowledgements</h1>
-<p/>
-<h1 id="rfc.references"><a href="#rfc.references">9.</a> References</h1>
-<h1 id="rfc.references.1"><a href="#rfc.references.1">9.1.</a> Normative References</h1>
+<h1 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to RMCAT</a></h1>
+<p id="rfc.section.4.3.p.1">[Open issue: Apply to <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite> and/or other proposals (e.g., NADA).] </p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> Security Considerations</h1>
+<p id="rfc.section.5.p.1">TBD</p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> IANA Considerations</h1>
+<p id="rfc.section.6.p.1">There are no IANA impacts in this memo.</p>
+<h1 id="rfc.section.7"><a href="#rfc.section.7">7.</a> Acknowledgements</h1>
+<p id="rfc.section.7.p.1">This document is based on the results published in <a href="#Nagy14">[Nagy14]</a>, it has benefited from several rounds of peer-review and hallway discussions.  </p>
+<h1 id="rfc.references"><a href="#rfc.references">8.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">8.1.</a> Normative References</h1>
 <table>
   <tbody>
     <tr>
@@ -574,7 +592,7 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.references.2"><a href="#rfc.references.2">9.2.</a> Informative References</h1>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">8.2.</a> Informative References</h1>
 <table>
   <tbody>
     <tr>
@@ -597,6 +615,18 @@
     </tr>
     <tr>
       <td class="reference">
+        <b id="I-D.alvestrand-rmcat-congestion">[I-D.alvestrand-rmcat-congestion]</b>
+      </td>
+      <td class="top"><a>Holmer, S.</a>, <a>Cicco, L.</a>, <a>Mascolo, S.</a> and <a>H. Alvestrand</a>, "<a href="http://tools.ietf.org/html/draft-alvestrand-rmcat-congestion-02">A Google Congestion Control Algorithm for Real-Time Communication</a>", Internet-Draft draft-alvestrand-rmcat-congestion-02, February 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.sarker-rmcat-eval-test">[I-D.sarker-rmcat-eval-test]</b>
+      </td>
+      <td class="top"><a>Sarker, Z.</a>, <a>Singh, V.</a>, <a>Zhu, X.</a> and <a>M. Ramalho</a>, "<a href="http://tools.ietf.org/html/draft-sarker-rmcat-eval-test-00">Test Cases for Evaluating RMCAT Proposals</a>", Internet-Draft draft-sarker-rmcat-eval-test-00, February 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
         <b id="Nagy14">[Nagy14]</b>
       </td>
       <td class="top"><a>Nagy, M.</a>, <a>Singh, V.</a>, <a>Ott, J.</a> and <a>L. Eggert</a>, "<a>Congestion Control using FEC for Conversational Multimedia Communication</a>", Proc. of 5th ACM Internation Conference on  Multimedia Systems (MMSys 2014) , 3 2014.</td>
@@ -615,14 +645,8 @@
     </tr>
   </tbody>
 </table>
-<h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#App-cl" id="App-cl">Change Log</a></h1>
-<p id="rfc.section.A.p.1">Note to the RFC-Editor: please remove this section prior to publication as an RFC.</p>
-<h1 id="rfc.appendix.A.1"><a href="#rfc.appendix.A.1">A.1.</a> Changes in draft-singh-rmcat-adaptive-fec-00</h1>
-<p/>
-
-<ul>
-  <li>Updated references.</li>
-</ul>
+<h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#sim-res" id="sim-res">Simulations</a></h1>
+<p id="rfc.section.A.p.1">This document is based on the results published in <a href="#Nagy14">[Nagy14]</a>.  See the paper for ns-2 and testbed results; more results based on the scenarios listed in <a href="#I-D.sarker-rmcat-eval-test">[I-D.sarker-rmcat-eval-test]</a> will be published shorty.  </p>
 <h1 id="rfc.authors">
   <a href="#rfc.authors">Authors' Addresses</a>
 </h1>

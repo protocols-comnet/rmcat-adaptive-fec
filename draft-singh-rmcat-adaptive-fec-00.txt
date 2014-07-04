@@ -73,19 +73,18 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
    3.  Concept: FEC for Congestion Control . . . . . . . . . . . . .   3
-   4.  Design Features . . . . . . . . . . . . . . . . . . . . . . .   3
+   4.  Design Features . . . . . . . . . . . . . . . . . . . . . . .   4
      4.1.  FEC Scheme  . . . . . . . . . . . . . . . . . . . . . . .   4
      4.2.  FEC and RTP . . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Applicability to RMCAT  . . . . . . . . . . . . . . . . . . .   4
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   4
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   4
-   8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   4
-   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     9.1.  Normative References  . . . . . . . . . . . . . . . . . .   4
-     9.2.  Informative References  . . . . . . . . . . . . . . . . .   5
-   Appendix A.  Change Log . . . . . . . . . . . . . . . . . . . . .   5
-     A.1.  Changes in draft-singh-rmcat-adaptive-fec-00  . . . . . .   6
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
+     4.3.  Applicability to RMCAT  . . . . . . . . . . . . . . . . .   5
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
+   8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     8.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
+     8.2.  Informative References  . . . . . . . . . . . . . . . . .   6
+   Appendix A.  Simulations  . . . . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
 
@@ -106,6 +105,7 @@ Table of Contents
    to protect against packet loss.  These are used in addition to the
    codec-dependent resilience methods (for e.g., full intra-refresh and
    error-concealment).  In this way, the multimedia system is anyway
+   trading off part of the sending rate for redundancy or
 
 
 
@@ -114,7 +114,6 @@ Singh, et al.            Expires January 5, 2015                [Page 2]
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
-   trading off part of the sending rate for redundancy or
    retransmissions to reduce the effects of packet loss.  An endpoint
    often prefers using FEC in high latency networks where
    retransmissions may arrive later than the playout time of the packet
@@ -156,12 +155,13 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
 3.  Concept: FEC for Congestion Control
 
-4.  Design Features
-
-
-
-
-
+   FEC is one method for providing error-resilience, it improves
+   reliability by adding redundant data to the primary media flow, which
+   is used by received to recover packets that have been lost due to
+   congestion or bit-errors.  The congestion control algorithm on the
+   other hand aims at maximizing the network path utilization, but risks
+   over-estimating the avaiable end-to-end network capacity leading to
+   congestion (and therefore losses).
 
 
 
@@ -169,6 +169,42 @@ Singh, et al.            Expires January 5, 2015                [Page 3]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
+
+   The main idea behind using FEC for congestion control is as follows:
+   the sending endpoint chooses a high FEC rate to aggressively probe
+   for available capacity and conversely chooses a low FEC rate to
+   conservatively probe for available capacity.  During the ramp up, if
+   a packet is lost and the FEC packet arrives in time for decoding, the
+   receiver is be able to recover the lost packet; if no packet is lost,
+   the sender is able to increase the media encoding rate by swapping
+   out a part of the FEC rate.  This method can be especially useful
+   when the sending rate is close to the bottleneck link rate: by
+   choosing an appropriate FEC rate, the endpoint is able to probe for
+   available capacity without changing the target media rate and
+   therefore not affecting the user-experience.  Therefore, the
+   congestion control algorithm is always able to probe for available
+   capacity, as improved reliability compensates for possible errors
+   resulting from overuse (i.e., increase in observed latency and/or
+   losses).
+
+       +-----------+          Good conditions            +-----------+
+       |           |------------------------------------>|           |
+       |   STAY    |                                     |   PROBE   |
+       |           |<------------------------------------|           |
+       +-----------+     Probed, but Loss recovered      +-----------+
+            |                                               |  |  |
+            |   ____________________________________________|  |  |
+            |  |                                               |  |
+            |  |                                               |  |
+       +-----------+                                     +-----------+
+       |           |          Unstable conditions        |           |
+       |  Reduce   |<------------------------------------|     UP    |
+       |           |                                     |           |
+       +-----------+                                     +-----------+
+
+       Figure 2: State machine of a Congestion Control enabling FEC.
+
+4.  Design Features
 
 4.1.  FEC Scheme
 
@@ -178,21 +214,40 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
    RFC4588, RFC5109, RFC6363
 
-5.  Applicability to RMCAT
 
-6.  Security Considerations
 
-   Security issues have not been discussed in this memo.
 
-7.  IANA Considerations
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 4]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
+4.3.  Applicability to RMCAT
+
+   [Open issue: Apply to Google's Congestion Control algorithm
+   [I-D.alvestrand-rmcat-congestion] and/or other proposals (e.g.,
+   NADA).]
+
+5.  Security Considerations
+
+   TBD
+
+6.  IANA Considerations
 
    There are no IANA impacts in this memo.
 
-8.  Acknowledgements
+7.  Acknowledgements
 
-9.  References
+   This document is based on the results published in [Nagy14], it has
+   benefited from several rounds of peer-review and hallway discussions.
 
-9.1.  Normative References
+8.  References
+
+8.1.  Normative References
 
    [RFC3550]  Schulzrinne, H., Casner, S., Frederick, R., and V.
               Jacobson, "RTP: A Transport Protocol for Real-Time
@@ -215,21 +270,17 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Real-Time Transport Control Protocol (RTCP): Opportunities
               and Consequences", RFC 5506, April 2009.
 
-
-
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 4]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    [I-D.ietf-rmcat-cc-requirements]
               Jesup, R., "Congestion Control Requirements For RMCAT",
               draft-ietf-rmcat-cc-requirements-02 (work in progress),
               February 2014.
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 5]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
 
    [I-D.ietf-avtcore-rtp-circuit-breakers]
               Perkins, C. and V. Singh, "Multimedia Congestion Control:
@@ -237,7 +288,7 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               avtcore-rtp-circuit-breakers-05 (work in progress),
               February 2014.
 
-9.2.  Informative References
+8.2.  Informative References
 
    [RFC4588]  Rey, J., Leon, D., Miyazaki, A., Varsa, V., and R.
               Hakenberg, "RTP Retransmission Payload Format", RFC 4588,
@@ -248,6 +299,17 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
    [RFC6363]  Watson, M., Begen, A., and V. Roca, "Forward Error
               Correction (FEC) Framework", RFC 6363, October 2011.
+
+   [I-D.alvestrand-rmcat-congestion]
+              Holmer, S., Cicco, L., Mascolo, S., and H. Alvestrand, "A
+              Google Congestion Control Algorithm for Real-Time
+              Communication", draft-alvestrand-rmcat-congestion-02 (work
+              in progress), February 2014.
+
+   [I-D.sarker-rmcat-eval-test]
+              Sarker, Z., Singh, V., Zhu, X., and M. Ramalho, "Test
+              Cases for Evaluating RMCAT Proposals", draft-sarker-rmcat-
+              eval-test-00 (work in progress), February 2014.
 
    [Nagy14]   Nagy, M., Singh, V., Ott, J., and L. Eggert, "Congestion
               Control using FEC for Conversational Multimedia
@@ -265,26 +327,23 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Loss in WebRTC", Proc. of IEEE International Conference on
               Image Processing (ICIP 2013) , 9 2013.
 
-Appendix A.  Change Log
-
-   Note to the RFC-Editor: please remove this section prior to
-   publication as an RFC.
 
 
 
 
 
 
-
-
-Singh, et al.            Expires January 5, 2015                [Page 5]
+Singh, et al.            Expires January 5, 2015                [Page 6]
 
 Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
-A.1.  Changes in draft-singh-rmcat-adaptive-fec-00
+Appendix A.  Simulations
 
-   o  Updated references.
+   This document is based on the results published in [Nagy14].  See the
+   paper for ns-2 and testbed results; more results based on the
+   scenarios listed in [I-D.sarker-rmcat-eval-test] will be published
+   shorty.
 
 Authors' Addresses
 
@@ -319,6 +378,22 @@ Authors' Addresses
    Email: jo@comnet.tkk.fi
 
 
+
+
+
+
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 7]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
    Lars Eggert
    NetApp
    Sonnenallee 1
@@ -333,4 +408,41 @@ Authors' Addresses
 
 
 
-Singh, et al.            Expires January 5, 2015                [Page 6]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 8]
