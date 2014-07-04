@@ -80,10 +80,10 @@ Table of Contents
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   6
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .   7
-   Appendix A.  Simulations  . . . . . . . . . . . . . . . . . . . .   8
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .   7
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .   8
+   Appendix A.  Simulations  . . . . . . . . . . . . . . . . . . . .   9
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
 
@@ -293,11 +293,22 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    [Open issue: The current implementation is delay based and is
    documented in [Nagy14].  However, we would like to generalize the
    concept and apply it to different RMCAT algorithms for e.g., Google's
-   Congestion Control algorithm [I-D.alvestrand-rmcat-congestion], etc.]
+   Congestion Control algorithm [I-D.alvestrand-rmcat-congestion],
+   SCReaM [I-D.johansson-rmcat-scream-cc], etc.]
 
 4.  Security Considerations
 
-   TBD
+   The security considerations of [RFC3550], RTP/AVPF profile for rapid
+   RTCP feedback [RFC4585], circuit breaker
+   [I-D.ietf-avtcore-rtp-circuit-breakers], and Generic Forward Error
+   Correction [RFC5109] apply.
+
+   If non-authenticated RTCP reports are used, an on-path attacker can
+   send forged RTCP feedback packets that can disrupt the operation of
+   the underlying congestion control.  Additionally, the forged packets
+   can either indicate no packet loss causing the congestion control to
+   ramp-up quickly, or indicate high packet loss or RTT causing the
+   circuit breaker to trigger.
 
 5.  IANA Considerations
 
@@ -316,6 +327,17 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
 7.  References
 
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 6]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
 7.1.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -328,15 +350,6 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    [RFC3551]  Schulzrinne, H. and S. Casner, "RTP Profile for Audio and
               Video Conferences with Minimal Control", STD 65, RFC 3551,
               July 2003.
-
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 6]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
 
    [RFC3611]  Friedman, T., Caceres, R., and A. Clark, "RTP Control
               Protocol Extended Reports (RTCP XR)", RFC 3611, November
@@ -370,6 +383,17 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               draft-ietf-xrblock-rtcp-xr-post-repair-loss-count-05 (work
               in progress), June 2014.
 
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 7]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
 7.2.  Informative References
 
    [RFC4588]  Rey, J., Leon, D., Miyazaki, A., Varsa, V., and R.
@@ -384,21 +408,16 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               draft-ietf-rmcat-cc-requirements-02 (work in progress),
               February 2014.
 
-
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 7]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    [I-D.alvestrand-rmcat-congestion]
               Holmer, S., Cicco, L., Mascolo, S., and H. Alvestrand, "A
               Google Congestion Control Algorithm for Real-Time
               Communication", draft-alvestrand-rmcat-congestion-02 (work
               in progress), February 2014.
+
+   [I-D.johansson-rmcat-scream-cc]
+              Johansson, I. and Z. Sarker, "Self-Clocked Rate Adaptation
+              for Multimedia", draft-johansson-rmcat-scream-cc-02 (work
+              in progress), June 2014.
 
    [I-D.sarker-rmcat-eval-test]
               Sarker, Z., Singh, V., Zhu, X., and M. Ramalho, "Test
@@ -421,6 +440,16 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
               Loss in WebRTC", Proc. of IEEE International Conference on
               Image Processing (ICIP 2013) , 9 2013.
 
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 8]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
+
+
 Appendix A.  Simulations
 
    This document is based on the results published in [Nagy14].  See the
@@ -441,15 +470,6 @@ Authors' Addresses
    URI:   http://www.netlab.tkk.fi/~varun/
 
 
-
-
-
-
-Singh, et al.            Expires January 5, 2015                [Page 8]
-
-Internet-Draft      Using FEC for Congestion Control           July 2014
-
-
    Marcin Nagy
    Aalto University
    School of Electrical Engineering
@@ -468,6 +488,22 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
    Finland
 
    Email: jo@comnet.tkk.fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015                [Page 9]
+
+Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
    Lars Eggert
@@ -501,4 +537,24 @@ Internet-Draft      Using FEC for Congestion Control           July 2014
 
 
 
-Singh, et al.            Expires January 5, 2015                [Page 9]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singh, et al.            Expires January 5, 2015               [Page 10]

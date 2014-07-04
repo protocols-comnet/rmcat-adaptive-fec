@@ -546,9 +546,10 @@
 <p id="rfc.section.3.2.p.2">The endpoint  MAY use a single-frame FEC or a multi-frame FEC for protecting the primary RTP stream. A single-frame FEC protects against a single packet loss and fails when burst loss occurs. Using multi-frame FEC helps mitigate these issues at the cost of higher overhead and latency in recovering lost packets. <a href="#Holmer13">[Holmer13]</a> shows examples of using a single- and multi-frame FEC.  </p>
 <p id="rfc.section.3.2.p.3">The receiving endpoint may report the post-repair loss (or residual loss) using either the report block defined in <a href="#RFC5725">[RFC5725]</a> (Run-length encoding of packets repaired) or in <a href="#I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count">[I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count]</a> (packet count of repaired packets).  </p>
 <h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#fec-cc-apply" id="fec-cc-apply">Applicability to other RMCAT Schemes</a></h1>
-<p id="rfc.section.3.3.p.1">[Open issue: The current implementation is delay based and is documented in <a href="#Nagy14">[Nagy14]</a>. However, we would like to generalize the concept and apply it to different RMCAT algorithms for e.g., <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite>, etc.] </p>
+<p id="rfc.section.3.3.p.1">[Open issue: The current implementation is delay based and is documented in <a href="#Nagy14">[Nagy14]</a>. However, we would like to generalize the concept and apply it to different RMCAT algorithms for e.g., <a href="#I-D.alvestrand-rmcat-congestion">Google's Congestion Control algorithm</a> <cite title="NONE">[I-D.alvestrand-rmcat-congestion]</cite>, <a href="#I-D.johansson-rmcat-scream-cc">SCReaM</a> <cite title="NONE">[I-D.johansson-rmcat-scream-cc]</cite>, etc.] </p>
 <h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> Security Considerations</h1>
-<p id="rfc.section.4.p.1">TBD</p>
+<p id="rfc.section.4.p.1">The security considerations of <a href="#RFC3550">[RFC3550]</a>, <a href="#RFC4585">RTP/AVPF profile for rapid RTCP feedback</a> <cite title="NONE">[RFC4585]</cite>, <a href="#I-D.ietf-avtcore-rtp-circuit-breakers">circuit breaker</a> <cite title="NONE">[I-D.ietf-avtcore-rtp-circuit-breakers]</cite>, and <a href="#RFC5109">Generic Forward Error Correction</a> <cite title="NONE">[RFC5109]</cite> apply.  </p>
+<p id="rfc.section.4.p.2">If non-authenticated RTCP reports are used, an on-path attacker can send forged RTCP feedback packets that can disrupt the operation of the underlying congestion control. Additionally, the forged packets can either indicate no packet loss causing the congestion control to ramp-up quickly, or indicate high packet loss or RTT causing the circuit breaker to trigger.  </p>
 <h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> IANA Considerations</h1>
 <p id="rfc.section.5.p.1">There are no IANA impacts in this memo.</p>
 <h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> Acknowledgements</h1>
@@ -646,6 +647,12 @@
         <b id="I-D.alvestrand-rmcat-congestion">[I-D.alvestrand-rmcat-congestion]</b>
       </td>
       <td class="top"><a>Holmer, S.</a>, <a>Cicco, L.</a>, <a>Mascolo, S.</a> and <a>H. Alvestrand</a>, "<a href="http://tools.ietf.org/html/draft-alvestrand-rmcat-congestion-02">A Google Congestion Control Algorithm for Real-Time Communication</a>", Internet-Draft draft-alvestrand-rmcat-congestion-02, February 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="I-D.johansson-rmcat-scream-cc">[I-D.johansson-rmcat-scream-cc]</b>
+      </td>
+      <td class="top"><a>Johansson, I.</a> and <a>Z. Sarker</a>, "<a href="http://tools.ietf.org/html/draft-johansson-rmcat-scream-cc-02">Self-Clocked Rate Adaptation for Multimedia</a>", Internet-Draft draft-johansson-rmcat-scream-cc-02, June 2014.</td>
     </tr>
     <tr>
       <td class="reference">

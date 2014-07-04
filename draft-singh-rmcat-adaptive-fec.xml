@@ -21,6 +21,8 @@
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count.xml">
 <!ENTITY I-D.alvestrand-rmcat-congestion PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.alvestrand-rmcat-congestion.xml">
+<!ENTITY I-D.johansson-rmcat-scream-cc PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.johansson-rmcat-scream-cc.xml">
 <!ENTITY I-D.sarker-rmcat-eval-test PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.sarker-rmcat-eval-test.xml">
 ]>
@@ -325,14 +327,27 @@ Resilience Schemes based on the network delay and observed packet loss">
           <xref target="Nagy14" />. However, we would like to generalize
           the concept and apply it to different RMCAT algorithms for e.g.,
           <xref target="I-D.alvestrand-rmcat-congestion">Google's
-          Congestion Control algorithm</xref>, etc.]
+          Congestion Control algorithm</xref>, <xref
+          target="I-D.johansson-rmcat-scream-cc">SCReaM</xref>, etc.]
         </t>
       </section>
 
     </section>
 
     <section title="Security Considerations">
-      <t>TBD</t>
+      <t>
+         The security considerations of <xref target="RFC3550" />,
+         <xref target="RFC4585">RTP/AVPF profile for rapid RTCP feedback</xref>,
+         <xref target="I-D.ietf-avtcore-rtp-circuit-breakers">circuit breaker</xref>,
+         and <xref target="RFC5109">Generic Forward Error Correction</xref> apply.
+      </t>
+      <t>
+        If non-authenticated RTCP reports are used, an on-path attacker can send
+        forged RTCP feedback packets that can disrupt the operation of the underlying
+        congestion control. Additionally, the forged packets can either indicate no
+        packet loss causing the congestion control to ramp-up quickly, or indicate
+        high packet loss or RTT causing the circuit breaker to trigger.
+      </t>
       <!-- <t>Security issues have not been discussed in this memo.</t> -->
       <!-- Congestion Collapse, Denial of Service -->
     </section>
@@ -377,6 +392,7 @@ Resilience Schemes based on the network delay and observed packet loss">
       &rfc6363; <!--  Forward Error Correction (FEC) Framework -->
       &I-D.ietf-rmcat-cc-requirements;
       &I-D.alvestrand-rmcat-congestion;
+      &I-D.johansson-rmcat-scream-cc;
       &I-D.sarker-rmcat-eval-test;
 
       <reference anchor="Nagy14">
