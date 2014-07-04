@@ -294,6 +294,47 @@ Resilience Schemes based on the network delay and observed packet loss">
         </list></t>
       </section>
 
+      <section title="Framework" anchor="fec-fw">
+      <t>
+
+      </t>
+
+<figure align="center" anchor="fig-fec-sm" title="Interaction
+  of Congestion Control and FEC Module.">
+<artwork align="center"><![CDATA[
++ - - - - - - - - - - - - - - - - - - - - - - - -+
+| +--------------------------------------------+ |
+  |            Media Encoder/Decoder           |
+| +--------------------------------------------+ |
+            |                            |
+| +- -- -- -- -- -- -- -+        +- -- -- -- -+  |
+  |    Rate Control     |        |     RTP    |
+| |                     |        |   Queue    |  |
+  +- -- -- -- -- -- -- -+        +- -- -- -- -+
+|   ^           |                        |       |
+    |           |                        |Source
+|   | R         +-----------------+      |  RTP  |
+    | T                           |      |
+|   | C    +--------------+     +------------+   |
+    | P    |  FEC Scheme  |<--->| FEC Module |
+|   |      +--------------+     +------------+   |
+    |                             |      |
+|   |                      Repair |      |Source |
+    |                       RTP   |      |  RTP
+| +--------------------------------------------+ |
+  |             Transport Layer (UDP)          |
+| +--------------------------------------------+ |
+                         |
+| +--------------------------------------------+ |
+  |                     IP                     |
+| +--------------------------------------------+ |
+
+| Endpoint                                       |
++ - - - - - - - - - - - - - - -  - - - - - - - - +
+]]></artwork>
+</figure>
+      </section>
+
       <section title="FEC Scheme" anchor="fec-scheme">
         <!--  <t>Block and Parity FEC</t> -->
         <t>
