@@ -25,5 +25,4 @@ git tag -d old-tag
 git push origin :refs/tags/old-tag
 git push --tags
 ```
-
 ==================
