@@ -31,7 +31,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc symrefs="yes" ?>
-<rfc ipr="trust200902" docName="draft-singh-rmcat-adaptive-fec-00" category="exp">
+<rfc ipr="trust200902" docName="draft-singh-rmcat-adaptive-fec-01" category="exp">
   <!-- TODO: Experimental, right? -->
   <!-- What is the category field value-->
   <front>
@@ -219,6 +219,7 @@ Resilience Schemes based on the network delay and observed packet loss">
         leading to congestion (and therefore losses).
       </t>
       <t>
+        <xref target="fig-fec-ts" />  shows the timeline of enabling and disabling FEC.
         The main idea behind using FEC for congestion control is as follows:
         the sending endpoint chooses a high FEC rate to aggressively probe for
         available capacity and conversely chooses a low FEC rate to conservatively
@@ -230,10 +231,12 @@ Resilience Schemes based on the network delay and observed packet loss">
         the bottleneck link rate: by choosing an appropriate FEC rate, the
         endpoint is able to probe for available capacity without changing the
         target media rate and therefore not affecting the user-experience.
-
-        Therefore, the congestion control algorithm is always able to probe for
+      </t>
+      <t>
+        Hence, the congestion control algorithm is always able to probe for
         available capacity, as improved reliability compensates for possible errors
-        resulting from overuse (i.e., increase in observed latency and/or losses).
+        resulting from probing for additional capacity (i.e., increase in observed 
+        latency and/or losses).
       </t>
 
 <figure align="center" anchor="fig-fec-ts" title="Congestion Control enabling FEC.">
