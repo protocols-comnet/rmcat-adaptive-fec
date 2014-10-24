@@ -236,6 +236,39 @@ Resilience Schemes based on the network delay and observed packet loss">
         resulting from overuse (i.e., increase in observed latency and/or losses).
       </t>
 
+<figure align="center" anchor="fig-fec-ts" title="Congestion Control enabling FEC.">
+<artwork align="center"><![CDATA[
+  ^  .........                               
+  | /         \                             /
+t |/           \                           /
+h |   +===+===+=\=+                       /
+r |   | F |   |  \|           +===+   +==/+
+o +===+---+   |   \...........|.F.|...|./F|===+              
+u |   |   |   |   |   +===+===+---+===+---+---+
+g |   |   |   |   |   | F |   |   |   |   |   |
+h |   |   |   |   |===+---+   |   |   |   |   |
+p |   |   |   |   |   |   |   |   |   |   |   |
+u |   |   |   |   |   |   |   |   |   |   |   |
+t |   |   |   |   |   |   |   |   |   |   |   |
+  | s | p | i | s | d | p | i | p | s | p | i |
+  +---+---+---+---+---+---+---+---+---+---+---+-->
+                      time
+
+Key:
++===+ Media with minimal FEC for error protection
+
++===+
+| F | Media with FEC for probing and error protection
++---+
+
+ .... 
+/    \  Available capacity
+
+d,s,p,i: are the states: Decrease, Stay, Probe, Increase
+]]></artwork>
+</figure>
+
+
 <figure align="center" anchor="fig-fec-sm" title="State machine of a
   Congestion Control enabling FEC.">
 <artwork align="center"><![CDATA[
@@ -259,36 +292,50 @@ Resilience Schemes based on the network delay and observed packet loss">
       <section title="States" anchor="fec-sm">
         <t>
           The <xref target="fig-fec-sm" /> illustrates the the state machine of
-          a congestion control algorithm incorporating FEC for probing. The
-          state-machine includes 4 states: STEADY, PROBE, INCREASE, and REDUCE.
+          a congestion control algorithm incorporating FEC for probing. 
+          The state transitions occur based on the information reported in the 
+          feedback packet. In <xref target="fig-fec-sm" /> (A) indicates congestion,
+          i.e., the congestion control observes increasing delay and/or packet loss, 
+          or any other congestion metric, and in response the congestion control 
+          reduces the transmission rate. In <xref target="fig-fec-sm" /> (B) occurs 
+          when the congestion cues report improvement in congestion metrics, and in 
+          response the congestion cue increases the transmission rate.
+          For probing using FEC, the congestion control needs to map to the following 
+          4 states: STEADY, PROBE, INCREASE, and REDUCE.
         </t>
         <t><list style="symbols">
           <t>
             STEADY state: The congestion control keeps the same target media rate
             and no additional FEC packets are generated for probing. This is a
-            transient state, after which the congestion control attempts to
-            increase the transmission rate.
+            transient state, after which the congestion control either attempts to
+            increase the transmission rate, or observes congestion and reduces
+            the transmission rate.
           </t>
           <t>
             REDUCE state: The congestion control reduces the transmission rate based
             on the observed congestion cues, and generated no additional
             FEC packets than the minimum required for error-resilience. If
             in subsequent reports the conditions improve, the congestion control
-            can directly transition to the probe state.
+            can directly transition to the PROBE state.
           </t>
           <t>
-            PROBE state: The congestion control observes no congestion (i.e.,
-            the transmission rate should be increased). The endpoint maintains
-            the same target media bit rate, and instead increases the amount of
-            FEC.
+            PROBE state: The congestion control observes no congestion for two 
+            reporting intervals (i.e., the transmission rate should be increased). 
+            The endpoint maintains the same target media bit rate, and instead 
+            increases the amount of FEC packets, therby increasing the transmission
+            rate.
           </t>
           <t>
-            INCREASE state: Depending on the congestion feedback, i.e., if no
-            congestion is observed, the media transmission rate can be increased while
-            maintaining minimal amount of FEC for error protection. If packets are lost,
-            but the lost packets are recovered by the FEC packets, the congestion control
-            can keep the same media bit rate and reduce the amount of FEC (compared to
-            the previous PROBE state). If congestion is observed, the congestion control
+            INCREASE state: The endpoint is sending FEC packets and the congestion control 
+            observes no congestion (as reported in RTCP feedback), the media transmission 
+            rate is increased while maintaining minimal amount of FEC for 
+            error protection. In this case, the combined transmission rate (FEC+media)
+            may remain the same as in the PROBE state. 
+            If the feedback reports packet loss, but some of these lost packets are 
+            recovered by the FEC packets, the congestion control can keep the same media 
+            bit rate and adjust the amount of FEC (compared to the previous PROBE state).
+            If congestion is observed (the target rate calculated by the congestion
+            control is much lower than the current media rate), the congestion control
             can transition to the REDUCE state and decrease the transmission rate.
           </t>
         </list></t>

@@ -7,9 +7,9 @@
 #             echo Working directory is dirty >&2; \
 #         fi
 
-DRAFTS =	draft-singh-rmcat-adaptive-fec.txt \
+DRAFTS =  draft-singh-rmcat-adaptive-fec.txt \
           draft-singh-rmcat-adaptive-fec.html \
-					draft-singh-rmcat-adaptive-fec.pdf
+          draft-singh-rmcat-adaptive-fec.pdf
 CMDSEP = ;
 #VERSION = 00
 
