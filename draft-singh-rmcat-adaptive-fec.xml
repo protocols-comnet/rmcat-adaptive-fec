@@ -11,6 +11,7 @@
 <!ENTITY rfc5681 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5681.xml">
 <!ENTITY rfc6363 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6363.xml">
 <!ENTITY rfc5725 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5725.xml">
+<!ENTITY rfc7097 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7097.xml">
 <!ENTITY I-D.ietf-rmcat-cc-requirements PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-cc-requirements.xml">
 <!ENTITY I-D.ietf-avtcore-rtp-circuit-breakers PUBLIC ""
@@ -25,6 +26,8 @@
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.johansson-rmcat-scream-cc.xml">
 <!ENTITY I-D.sarker-rmcat-eval-test PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.sarker-rmcat-eval-test.xml">
+<!ENTITY I-D.singh-payload-rtp-1d2d-parity-scheme PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.singh-payload-rtp-1d2d-parity-scheme.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -421,15 +424,15 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
           Correction (FEC) codes with RTP and allows any FEC code to be used with
           the framework. For this proposal, the FEC packets are created by
           XORing RTP media packets, the resulting redundant RTP packets are
-          encoded using the scheme defined in <xref target="RFC5109" />.
+          encoded using the scheme defined in <xref target="I-D.singh-payload-rtp-1d2d-parity-scheme" />.
         </t>
         <t>
-          The endpoint  MAY use a single-frame FEC or a multi-frame FEC for
-          protecting the primary RTP stream. A single-frame FEC protects against a
-          single packet loss and fails when burst loss occurs. Using multi-frame
-          FEC helps mitigate these issues at the cost of higher overhead and
-          latency in recovering lost packets. <xref target="Holmer13" /> shows
-          examples of using a single- and multi-frame FEC.
+          The endpoint  MAY use a single-frame FEC (1-dimensional) or a multi-frame 
+          FEC (2-dimensional) for protecting the primary RTP stream. A single-frame 
+          FEC protects against a single packet loss and fails when burst loss occurs. 
+          Using multi-frame FEC helps mitigate these issues at the cost of higher 
+          overhead and latency in recovering lost packets. <xref target="Holmer13" /> 
+          shows examples of using a single- and multi-frame FEC.
          </t>
          <t>
           The receiving endpoint may report the post-repair loss (or residual
@@ -438,6 +441,19 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
           <xref target="I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count" />
           (packet count of repaired packets).
          </t>
+         <t>
+          Additionally, the receiving may report the occurance of losses and discards 
+          via a run-length encoding (RLE) of lost <xref target="RFC3611" /> (Section 4.1), 
+          which enables the sender to detect the burst loss length and apply appropriate 
+          FEC scheme. 
+        </t>
+        <t>
+          Packet that arrive too late to be played out by the receiver are discarded by 
+          the de-jitter buffer. Typically, the de-jitter buffer adjust the playout delay
+          based on the observed frame inter-arrival delay, so that packets are played out
+          smoothly. Reporting RLE of discarded packets <xref target="RFC7097" /> may
+          further enable a sender to detect losses that occur after packet discards.
+        </t>
       </section>
 
       <section title="Applicability to other RMCAT Schemes" anchor="fec-cc-apply">
@@ -495,14 +511,13 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       <!-- RTP related -->
       &rfc3550;
       &rfc3551;
-      &rfc3611;
+      &rfc3611; <!-- Security + RLE loss-->
       &rfc4585;
       &rfc5506;
       <!--RMCAT related -->
       &I-D.ietf-avtcore-rtp-circuit-breakers;
       <!-- FEC related -->
-      &rfc5109; <!-- RTP FEC payload -->
-      &rfc5725; <!-- RTP FEC payload -->
+      &I-D.singh-payload-rtp-1d2d-parity-scheme;
       &I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count;
     </references>
 
@@ -514,6 +529,10 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       &I-D.alvestrand-rmcat-congestion;
       &I-D.johansson-rmcat-scream-cc;
       &I-D.sarker-rmcat-eval-test;
+      &rfc5109; <!-- RTP FEC payload -->
+      &rfc5725; <!-- RLE post-repair -->
+      &rfc7097; <!-- RLE discard-->
+      
 
       <reference anchor="Nagy14">
         <front>
