@@ -34,7 +34,7 @@
 <?rfc toc="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc symrefs="yes" ?>
-<rfc ipr="trust200902" docName="draft-singh-rmcat-adaptive-fec-01" category="exp">
+<rfc ipr="trust200902" docName="draft-singh-rmcat-adaptive-fec-02" category="exp">
   <!-- TODO: Experimental, right? -->
   <!-- What is the category field value-->
   <front>
@@ -102,7 +102,7 @@
       </address>
     </author>
 
-    <date year="2014"/>
+    <date />
     <area>TSV</area>
     <workgroup>RMCAT WG</workgroup>
     <keyword>RTP</keyword>
@@ -238,18 +238,18 @@ Resilience Schemes based on the network delay and observed packet loss">
       <t>
         Hence, the congestion control algorithm is always able to probe for
         available capacity, as improved reliability compensates for possible errors
-        resulting from probing for additional capacity (i.e., increase in observed 
+        resulting from probing for additional capacity (i.e., increase in observed
         latency and/or losses).
       </t>
 
 <figure align="center" anchor="fig-fec-ts" title="Congestion Control enabling FEC.">
 <artwork align="center"><![CDATA[
-  ^  .........                               
+  ^  .........
   | /         \                             /
 t |/           \                           /
 h |   +===+===+=\=+                       /
 r |   | F |   |  \|           +===+   +==/+
-o +===+---+   |   \...........|.F.|...|./F|===+              
+o +===+---+   |   \...........|.F.|...|./F|===+
 u |   |   |   |   |   +===+===+---+===+---+---+
 g |   |   |   |   |   | F |   |   |   |   |   |
 h |   |   |   |   |===+---+   |   |   |   |   |
@@ -267,7 +267,7 @@ Key:
 | F | Media with FEC for probing and error protection
 +---+
 
- .... 
+ ....
 /    \  Available capacity
 
 d,s,p,i: are the states: Decrease, Stay, Probe, Increase
@@ -298,15 +298,15 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       <section title="States" anchor="fec-sm">
         <t>
           The <xref target="fig-fec-sm" /> illustrates the the state machine of
-          a congestion control algorithm incorporating FEC for probing. 
-          The state transitions occur based on the information reported in the 
+          a congestion control algorithm incorporating FEC for probing.
+          The state transitions occur based on the information reported in the
           feedback packet. In <xref target="fig-fec-sm" /> (A) indicates congestion,
-          i.e., the congestion control observes increasing delay and/or packet loss, 
-          or any other congestion metric, and in response the congestion control 
-          reduces the transmission rate. In <xref target="fig-fec-sm" /> (B) occurs 
-          when the congestion cues report improvement in congestion metrics, and in 
+          i.e., the congestion control observes increasing delay and/or packet loss,
+          or any other congestion metric, and in response the congestion control
+          reduces the transmission rate. In <xref target="fig-fec-sm" /> (B) occurs
+          when the congestion cues report improvement in congestion metrics, and in
           response the congestion cue increases the transmission rate.
-          For probing using FEC, the congestion control needs to map to the following 
+          For probing using FEC, the congestion control needs to map to the following
           4 states: STEADY, PROBE, INCREASE, and REDUCE.
         </t>
         <t><list style="symbols">
@@ -325,20 +325,20 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
             can directly transition to the PROBE state.
           </t>
           <t>
-            PROBE state: The congestion control observes no congestion for two 
-            reporting intervals (i.e., the transmission rate should be increased). 
-            The endpoint maintains the same target media bit rate, and instead 
+            PROBE state: The congestion control observes no congestion for two
+            reporting intervals (i.e., the transmission rate should be increased).
+            The endpoint maintains the same target media bit rate, and instead
             increases the amount of FEC packets, therby increasing the transmission
             rate.
           </t>
           <t>
-            INCREASE state: The endpoint is sending FEC packets and the congestion control 
-            observes no congestion (as reported in RTCP feedback), the media transmission 
-            rate is increased while maintaining minimal amount of FEC for 
+            INCREASE state: The endpoint is sending FEC packets and the congestion control
+            observes no congestion (as reported in RTCP feedback), the media transmission
+            rate is increased while maintaining minimal amount of FEC for
             error protection. In this case, the combined transmission rate (FEC+media)
-            may remain the same as in the PROBE state. 
-            If the feedback reports packet loss, but some of these lost packets are 
-            recovered by the FEC packets, the congestion control can keep the same media 
+            may remain the same as in the PROBE state.
+            If the feedback reports packet loss, but some of these lost packets are
+            recovered by the FEC packets, the congestion control can keep the same media
             bit rate and adjust the amount of FEC (compared to the previous PROBE state).
             If congestion is observed (the target rate calculated by the congestion
             control is much lower than the current media rate), the congestion control
@@ -406,15 +406,15 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
 | +--------------------------------------------+ |
   |           RTP Processing  Layer            |
 | |                  (Queue)                   | |
-  +--------------------------------------------+ 
+  +--------------------------------------------+
 |                        |                       |
-  +--------------------------------------------+ 
+  +--------------------------------------------+
 | |             Transport Layer (UDP)          | |
-  +--------------------------------------------+  
+  +--------------------------------------------+
 |                        |                       |
-  +--------------------------------------------+  
+  +--------------------------------------------+
 | |                     IP                     | |
-  +--------------------------------------------+ 
+  +--------------------------------------------+
 |                                                |
 | Endpoint                                       |
 + - - - - - - - - - - - - - - -  - - - - - - - - +
@@ -432,11 +432,11 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
           encoded using the scheme defined in <xref target="I-D.singh-payload-rtp-1d2d-parity-scheme" />.
         </t>
         <t>
-          The endpoint  MAY use a single-frame FEC (1-dimensional) or a multi-frame 
-          FEC (2-dimensional) for protecting the primary RTP stream. A single-frame 
-          FEC protects against a single packet loss and fails when burst loss occurs. 
-          Using multi-frame FEC helps mitigate these issues at the cost of higher 
-          overhead and latency in recovering lost packets. <xref target="Holmer13" /> 
+          The endpoint  MAY use a single-frame FEC (1-dimensional) or a multi-frame
+          FEC (2-dimensional) for protecting the primary RTP stream. A single-frame
+          FEC protects against a single packet loss and fails when burst loss occurs.
+          Using multi-frame FEC helps mitigate these issues at the cost of higher
+          overhead and latency in recovering lost packets. <xref target="Holmer13" />
           shows examples of using a single- and multi-frame FEC.
          </t>
          <t>
@@ -447,13 +447,13 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
           (packet count of repaired packets).
          </t>
          <t>
-          Additionally, the receiving may report the occurance of losses and discards 
-          via a run-length encoding (RLE) of lost <xref target="RFC3611" /> (Section 4.1), 
-          which enables the sender to detect the burst loss length and apply appropriate 
-          FEC scheme. 
+          Additionally, the receiving may report the occurance of losses and discards
+          via a run-length encoding (RLE) of lost <xref target="RFC3611" /> (Section 4.1),
+          which enables the sender to detect the burst loss length and apply appropriate
+          FEC scheme.
         </t>
         <t>
-          Packet that arrive too late to be played out by the receiver are discarded by 
+          Packet that arrive too late to be played out by the receiver are discarded by
           the de-jitter buffer. Typically, the de-jitter buffer adjust the playout delay
           based on the observed frame inter-arrival delay, so that packets are played out
           smoothly. Reporting RLE of discarded packets <xref target="RFC7097" /> may
@@ -508,6 +508,10 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
         Neither the European Commission nor the EITICT labs is liable for any use that
         may be made of the information in this document.
       </t>
+      <t>
+        Lars Eggert has received funding from the European Union's Horizon 2020 research and innovation programme 2014-2018 under grant agreement No. 644866.
+        This document reflects only the authors' views and the European Commission is not responsible for any use that may be made of the information it contains.
+      </t>
     </section>
   </middle>
   <back>
@@ -537,7 +541,7 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       &rfc5109; <!-- RTP FEC payload -->
       &rfc5725; <!-- RLE post-repair -->
       &rfc7097; <!-- RLE discard-->
-      
+
 
       <reference anchor="Nagy14">
         <front>
