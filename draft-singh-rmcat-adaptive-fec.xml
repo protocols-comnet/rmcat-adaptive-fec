@@ -24,10 +24,10 @@
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.alvestrand-rmcat-congestion.xml">
 <!ENTITY I-D.johansson-rmcat-scream-cc PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.johansson-rmcat-scream-cc.xml">
-<!ENTITY I-D.sarker-rmcat-eval-test PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.sarker-rmcat-eval-test.xml">
-<!ENTITY I-D.singh-payload-rtp-1d2d-parity-scheme PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.singh-payload-rtp-1d2d-parity-scheme.xml">
+<!ENTITY I-D.ietf-rmcat-eval-test PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-eval-test.xml">
+<!ENTITY I-D.ietf-payload-flexible-fec-scheme PUBLIC ""
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-payload-flexible-fec-scheme.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -429,7 +429,7 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
           Correction (FEC) codes with RTP and allows any FEC code to be used with
           the framework. For this proposal, the FEC packets are created by
           XORing RTP media packets, the resulting redundant RTP packets are
-          encoded using the scheme defined in <xref target="I-D.singh-payload-rtp-1d2d-parity-scheme" />.
+          encoded using the scheme defined in <xref target="I-D.ietf-payload-flexible-fec-scheme" />.
         </t>
         <t>
           The endpoint  MAY use a single-frame FEC (1-dimensional) or a multi-frame
@@ -509,8 +509,10 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
         may be made of the information in this document.
       </t>
       <t>
-        Lars Eggert has received funding from the European Union's Horizon 2020 research and innovation programme 2014-2018 under grant agreement No. 644866.
-        This document reflects only the authors' views and the European Commission is not responsible for any use that may be made of the information it contains.
+        Lars Eggert has received funding from the European Union's Horizon 2020 research
+        and innovation programme 2014-2018 under grant agreement No. 644866.
+        This document reflects only the authors' views and the European Commission is not
+        responsible for any use that may be made of the information it contains.
       </t>
     </section>
   </middle>
@@ -526,7 +528,7 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       <!--RMCAT related -->
       &I-D.ietf-avtcore-rtp-circuit-breakers;
       <!-- FEC related -->
-      &I-D.singh-payload-rtp-1d2d-parity-scheme;
+      &I-D.ietf-payload-flexible-fec-scheme;
       &I-D.ietf-xrblock-rtcp-xr-post-repair-loss-count;
     </references>
 
@@ -537,7 +539,7 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       &I-D.ietf-rmcat-cc-requirements;
       &I-D.alvestrand-rmcat-congestion;
       &I-D.johansson-rmcat-scream-cc;
-      &I-D.sarker-rmcat-eval-test;
+      &I-D.ietf-rmcat-eval-test;
       &rfc5109; <!-- RTP FEC payload -->
       &rfc5725; <!-- RLE post-repair -->
       &rfc7097; <!-- RLE discard-->
@@ -589,7 +591,7 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       <t>
         This document is based on the results published in <xref target="Nagy14" />.
         See the paper for ns-2 and testbed results; more results based on the
-        scenarios listed in <xref target="I-D.sarker-rmcat-eval-test" />
+        scenarios listed in <xref target="I-D.ietf-rmcat-eval-test" />
         will be published shorty.
       </t>
     </section>
