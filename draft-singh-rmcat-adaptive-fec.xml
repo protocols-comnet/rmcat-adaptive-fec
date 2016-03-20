@@ -13,20 +13,19 @@
 <!ENTITY rfc5725 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5725.xml">
 <!ENTITY rfc7097 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7097.xml">
 <!ENTITY rfc7509 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7509.xml">
+<!ENTITY rfc6817 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6817.xml">
 <!ENTITY I-D.ietf-rmcat-cc-requirements PUBLIC ""
 "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-cc-requirements.xml">
 <!ENTITY I-D.ietf-avtcore-rtp-circuit-breakers PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-avtcore-rtp-circuit-breakers.xml">
-<!ENTITY I-D.ietf-ledbat-congestion PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-ledbat-congestion.xml">
-<!ENTITY I-D.alvestrand-rmcat-congestion PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.alvestrand-rmcat-congestion.xml">
-<!ENTITY I-D.johansson-rmcat-scream-cc PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.johansson-rmcat-scream-cc.xml">
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-avtcore-rtp-circuit-breakers.xml">
+<!ENTITY I-D.ietf-rmcat-gcc PUBLIC ""
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-gcc.xml">
+<!ENTITY I-D.ietf-rmcat-scream-cc PUBLIC ""
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-scream-cc.xml">
 <!ENTITY I-D.ietf-rmcat-eval-test PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-eval-test.xml">
+"http://xml2rfc.ietf.org/public/rfc/bibxml3/reference.I-D.ietf-rmcat-eval-test.xml">
 <!ENTITY I-D.ietf-payload-flexible-fec-scheme PUBLIC ""
-"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-payload-flexible-fec-scheme.xml">
+"http://xml2rfc.ietf.org//public/rfc/bibxml3/reference.I-D.ietf-payload-flexible-fec-scheme.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -41,19 +40,17 @@
       Congestion Control Using FEC for Conversational Media
     </title>
 
-    <author fullname="Varun Singh" initials="V" surname="Singh">
-      <organization>Aalto University</organization>
+    <author fullname="Varun Singh" initials="V." surname="Singh">
+      <organization abbrev="callstats.io">Nemu Dialogue Systems Oy</organization>
       <address>
         <postal>
-          <street>School of Electrical Engineering</street>
-          <street>Otakaari 5 A</street>
-          <city>Espoo</city>
-          <region>FIN</region>
-          <code>02150</code>
+          <street>Runeberginkatu 4c A 4 </street>
+          <city>Helsinki</city>
+          <code>00100</code>
           <country>Finland</country>
         </postal>
-        <email>varun@comnet.tkk.fi</email>
-        <uri>http://www.netlab.tkk.fi/~varun/</uri>
+          <email>varun.singh@iki.fi</email>
+        <uri>http://www.callstats.io/</uri>
       </address>
     </author>
 
@@ -73,17 +70,17 @@
     </author>
 
     <author initials="J." surname="Ott" fullname="Joerg Ott">
-      <organization>Aalto University</organization>
+      <organization>Technical University of Munich</organization>
       <address>
         <postal>
-          <street>School of Electrical Engineering</street>
-          <street>Otakaari 5 A</street>
-          <city>Espoo</city>
-          <region>FIN</region>
-          <code>02150</code>
-          <country>Finland</country>
+          <street>Faculty of Informatics</street>
+          <street>Boltzmannstrasse 3</street>
+          <city>Garching bei München</city>
+          <region>DE</region>
+          <code>85748</code>
+          <country>Germany</country>
         </postal>
-        <email>jo@comnet.tkk.fi</email>
+        <email>ott@in.tum.de</email>
       </address>
     </author>
 
@@ -466,9 +463,9 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
           The current implementation is delay based and is documented in
           <xref target="Nagy14" />. However, we would like to generalize
           the concept and apply it to different RMCAT algorithms for e.g.,
-          <xref target="I-D.alvestrand-rmcat-congestion">Google's
+          <xref target="I-D.ietf-rmcat-gcc">Google's
           Congestion Control algorithm</xref>, <xref
-          target="I-D.johansson-rmcat-scream-cc">SCReaM</xref>, etc.]
+          target="I-D.ietf-rmcat-scream-cc">SCReaM</xref>, etc.]
         </t>
       </section>
 
@@ -501,11 +498,13 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       <t>
         This document is based on the results published in <xref target="Nagy14" />.
       </t>
-      <t>The work of Varun Singh, and Joerg Ott has been partially supported by the
-        European Institute of Innovation and Technology (EIT) ICT Labs
-        activity RCLD 11882. The views expressed here are those of the author(s) only.
-        Neither the European Commission nor the EITICT labs is liable for any use that
-        may be made of the information in this document.
+      <t>
+        The work of Varun Singh, and Joerg Ott has been partially supported by
+        the European Institute of Innovation and Technology (EIT) ICT Labs
+        activity RCLD 11882 (2012-2014). The views expressed here are those of
+        the author(s) only. Neither the European Commission nor the EITICT
+        labs is liable for any use that may be made of the information in this
+        document.
       </t>
       <t>
         Lars Eggert has received funding from the European Union's Horizon 2020 research
@@ -536,8 +535,8 @@ d,s,p,i: are the states: Decrease, Stay, Probe, Increase
       &rfc4588; <!-- RTP Retx payload -->
       &rfc6363; <!--  Forward Error Correction (FEC) Framework -->
       &I-D.ietf-rmcat-cc-requirements;
-      &I-D.alvestrand-rmcat-congestion;
-      &I-D.johansson-rmcat-scream-cc;
+      &I-D.ietf-rmcat-gcc;
+      &I-D.ietf-rmcat-scream-cc;
       &I-D.ietf-rmcat-eval-test;
       &rfc5109; <!-- RTP FEC payload -->
       &rfc5725; <!-- RLE post-repair -->
