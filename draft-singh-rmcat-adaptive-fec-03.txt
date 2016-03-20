@@ -5,8 +5,9 @@
 RMCAT WG                                                        V. Singh
 Internet-Draft                                              callstats.io
 Intended status: Experimental                                    M. Nagy
-Expires: September 21, 2016                                       J. Ott
-                                                        Aalto University
+Expires: September 21, 2016                             Aalto University
+                                                                  J. Ott
+                                          Technical University of Munich
                                                                L. Eggert
                                                                   NetApp
                                                           March 20, 2016
@@ -45,7 +46,6 @@ Status of This Memo
    material or to cite them other than as "work in progress."
 
    This Internet-Draft will expire on September 21, 2016.
-
 
 
 
@@ -97,14 +97,14 @@ Table of Contents
    voice telephony and video conferencing systems.  Many of these
    systems run over best-effort UDP/IP networks, and are required to
    implement congestion to adapt the transmission rate of the RTP
-   streams to match the available network capacity, while maintaing the
-   user-experience [I-D.ietf-rmcat-cc-requirements].  The circuit
+   streams to match the available network capacity, while maintaining
+   the user-experience [I-D.ietf-rmcat-cc-requirements].  The circuit
    breakers [I-D.ietf-avtcore-rtp-circuit-breakers] describe a minimal
    set of conditions when an RTP stream is causing severe congestion and
    should cease transmission.  Consequently, the congestion control
    algorithm are expected to avoid triggering these conditions.
 
-   Conversational multimedia systems use Negative Acknowlegment (NACK),
+   Conversational multimedia systems use Negative Acknowledgment (NACK),
    Forward Error Correction (FEC), and Reference Picture Selection (RPS)
 
 
@@ -125,8 +125,8 @@ Internet-Draft      Using FEC for Congestion Control          March 2016
    endpoint needs to adapt the transmission rate to best fit the
    changing network capacity and the amount of redundancy based on the
    observed/expected loss rate and network latency.  Figure 1 shows the
-   applicatbility of different error-resilience schemes based on the
-   end-to-end latency and the observed packet loss [Devadoss08].
+   applicability of different error-resilience schemes based on the end-
+   to-end latency and the observed packet loss [Devadoss08].
 
                       ^
                       |            .__________.
@@ -180,7 +180,7 @@ Internet-Draft      Using FEC for Congestion Control          March 2016
    is used by received to recover packets that have been lost due to
    congestion or bit-errors.  The congestion control algorithm on the
    other hand aims at maximizing the network path utilization, but risks
-   over-estimating the avaiable end-to-end network capacity leading to
+   over-estimating the available end-to-end network capacity leading to
    congestion (and therefore losses).
 
    Figure 2 shows the timeline of enabling and disabling FEC.  The main
@@ -311,7 +311,7 @@ Internet-Draft      Using FEC for Congestion Control          March 2016
    o  PROBE state: The congestion control observes no congestion for two
       reporting intervals (i.e., the transmission rate should be
       increased).  The endpoint maintains the same target media bit
-      rate, and instead increases the amount of FEC packets, therby
+      rate, and instead increases the amount of FEC packets, thereby
       increasing the transmission rate.
 
    o  INCREASE state: The endpoint is sending FEC packets and the
@@ -351,7 +351,7 @@ Internet-Draft      Using FEC for Congestion Control          March 2016
    the rate control module the bit rate remaining for the RTP media
    stream, which may be less than equal to the calculated bit rate.
 
-   At the reciver, the FEC module reconstructs lost packets in the
+   At the receiver, the FEC module reconstructs lost packets in the
    primary stream from the packets received in the repair stream.  If
    packets are repair it generates the post-repair loss report
    (discussed in Section 3.3) for the corresponding RTP packets.
@@ -463,13 +463,13 @@ Internet-Draft      Using FEC for Congestion Control          March 2016
    encoding of packets repaired) or in [RFC7509] (packet count of
    repaired packets).
 
-   Additionally, the receiving may report the occurance of losses and
+   Additionally, the receiving may report the occurrence of losses and
    discards via a run-length encoding (RLE) of lost [RFC3611]
    (Section 4.1), which enables the sender to detect the burst loss
    length and apply appropriate FEC scheme.
 
    Packet that arrive too late to be played out by the receiver are
-   discarded by the de-jitter buffer.  Typically, the de-jitter buffer
+   discarded by the dejitter buffer.  Typically, the dejitter buffer
    adjust the playout delay based on the observed frame inter-arrival
    delay, so that packets are played out smoothly.  Reporting RLE of
    discarded packets [RFC7097] may further enable a sender to detect
@@ -522,10 +522,10 @@ Internet-Draft      Using FEC for Congestion Control          March 2016
    in this document.
 
    Lars Eggert has received funding from the European Union's Horizon
-   2020 research and innovation programme 2014-2018 under grant
-   agreement No. 644866.  This document reflects only the authors' views
-   and the European Commission is not responsible for any use that may
-   be made of the information it contains.
+   2020 research and innovation program 2014-2018 under grant agreement
+   No. 644866 ("SSICLOPS").  This document reflects only the authors'
+   views and the European Commission is not responsible for any use that
+   may be made of the information it contains.
 
 7.  References
 
@@ -704,13 +704,13 @@ Authors' Addresses
 
 
    Joerg Ott
-   Aalto University
-   School of Electrical Engineering
-   Otakaari 5 A
-   Espoo, FIN  02150
-   Finland
+   Technical University of Munich
+   Faculty of Informatics
+   Boltzmannstrasse 3
+   Garching bei Muenchen, DE  85748
+   Germany
 
-   Email: jo@comnet.tkk.fi
+   Email: ott@in.tum.de
 
 
    Lars Eggert
